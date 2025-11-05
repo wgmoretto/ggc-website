@@ -2,6 +2,52 @@
 -- This file contains all custom tables required by WebEngine CMS
 
 -- ==============================================
+-- ALTER EXISTING TABLES (MUST BE FIRST!)
+-- ==============================================
+
+-- Add credits column to MEMB_INFO if not exists
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'MEMB_INFO') AND name = 'credits')
+BEGIN
+    ALTER TABLE MEMB_INFO ADD credits INT DEFAULT 0;
+END
+GO
+
+-- Add admin_level column to MEMB_INFO if not exists
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'MEMB_INFO') AND name = 'admin_level')
+BEGIN
+    ALTER TABLE MEMB_INFO ADD admin_level INT DEFAULT 0;
+END
+GO
+
+-- Add Resets column to Character if not exists
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'Character') AND name = 'Resets')
+BEGIN
+    ALTER TABLE Character ADD Resets INT DEFAULT 0;
+END
+GO
+
+-- Add GrandResets column to Character if not exists
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'Character') AND name = 'GrandResets')
+BEGIN
+    ALTER TABLE Character ADD GrandResets INT DEFAULT 0;
+END
+GO
+
+-- Add GensFamily column to Character if not exists
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'Character') AND name = 'GensFamily')
+BEGIN
+    ALTER TABLE Character ADD GensFamily INT DEFAULT 0;
+END
+GO
+
+-- Add GensContribution column to Character if not exists
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'Character') AND name = 'GensContribution')
+BEGIN
+    ALTER TABLE Character ADD GensContribution INT DEFAULT 0;
+END
+GO
+
+-- ==============================================
 -- BANS & SECURITY
 -- ==============================================
 
@@ -30,6 +76,7 @@ CREATE TABLE GGC_BLOCKED_IP (
     reason NVARCHAR(255),
     created_at DATETIME DEFAULT GETDATE()
 );
+GO
 
 -- ==============================================
 -- NEWS SYSTEM
@@ -56,6 +103,7 @@ CREATE TABLE GGC_NEWS_TRANSLATIONS (
 );
 
 CREATE INDEX idx_news_published ON GGC_NEWS(published, created_at);
+GO
 
 -- ==============================================
 -- CREDITS & DONATIONS
@@ -108,6 +156,7 @@ CREATE TABLE GGC_STRIPE_TRANSACTIONS (
     created_at DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (username) REFERENCES MEMB_INFO(memb___id)
 );
+GO
 
 -- ==============================================
 -- VOTING SYSTEM
@@ -145,6 +194,7 @@ CREATE TABLE GGC_VOTE_LOGS (
 
 CREATE INDEX idx_votes_username ON GGC_VOTES(username, voted_at);
 CREATE INDEX idx_votes_site ON GGC_VOTES(site_id, voted_at);
+GO
 
 -- ==============================================
 -- DOWNLOADS
@@ -162,6 +212,7 @@ CREATE TABLE GGC_DOWNLOADS (
     sort_order INT DEFAULT 0,
     created_at DATETIME DEFAULT GETDATE()
 );
+GO
 
 -- ==============================================
 -- PASSWORD RESET
@@ -179,6 +230,7 @@ CREATE TABLE GGC_PASSCHANGE_REQUEST (
 );
 
 CREATE INDEX idx_token ON GGC_PASSCHANGE_REQUEST(token, expires_at, used);
+GO
 
 -- ==============================================
 -- EMAIL VERIFICATION
@@ -193,6 +245,7 @@ CREATE TABLE GGC_REGISTER_ACCOUNT (
     created_at DATETIME DEFAULT GETDATE(),
     expires_at DATETIME
 );
+GO
 
 -- ==============================================
 -- CRON JOBS
@@ -208,6 +261,7 @@ CREATE TABLE GGC_CRON (
     status VARCHAR(50) DEFAULT 'idle',
     enabled BIT DEFAULT 1
 );
+GO
 
 -- ==============================================
 -- PLUGINS
@@ -221,6 +275,7 @@ CREATE TABLE GGC_PLUGINS (
     config NVARCHAR(MAX),
     installed_at DATETIME DEFAULT GETDATE()
 );
+GO
 
 -- ==============================================
 -- ACCOUNT COUNTRY TRACKING
@@ -235,6 +290,7 @@ CREATE TABLE GGC_ACCOUNT_COUNTRY (
     created_at DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (username) REFERENCES MEMB_INFO(memb___id)
 );
+GO
 
 -- ==============================================
 -- FLA (Foreign Language Accounts)
@@ -247,46 +303,7 @@ CREATE TABLE GGC_FLA (
     timezone VARCHAR(50),
     FOREIGN KEY (username) REFERENCES MEMB_INFO(memb___id)
 );
-
--- ==============================================
--- ALTER EXISTING TABLES
--- ==============================================
-
--- Add credits column to MEMB_INFO if not exists
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'MEMB_INFO') AND name = 'credits')
-BEGIN
-    ALTER TABLE MEMB_INFO ADD credits INT DEFAULT 0;
-END
-
--- Add admin_level column to MEMB_INFO if not exists
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'MEMB_INFO') AND name = 'admin_level')
-BEGIN
-    ALTER TABLE MEMB_INFO ADD admin_level INT DEFAULT 0;
-END
-
--- Add Resets column to Character if not exists
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'Character') AND name = 'Resets')
-BEGIN
-    ALTER TABLE Character ADD Resets INT DEFAULT 0;
-END
-
--- Add GrandResets column to Character if not exists
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'Character') AND name = 'GrandResets')
-BEGIN
-    ALTER TABLE Character ADD GrandResets INT DEFAULT 0;
-END
-
--- Add GensFamily column to Character if not exists
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'Character') AND name = 'GensFamily')
-BEGIN
-    ALTER TABLE Character ADD GensFamily INT DEFAULT 0;
-END
-
--- Add GensContribution column to Character if not exists
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'Character') AND name = 'GensContribution')
-BEGIN
-    ALTER TABLE Character ADD GensContribution INT DEFAULT 0;
-END
+GO
 
 -- ==============================================
 -- INITIAL DATA
@@ -315,6 +332,7 @@ INSERT INTO GGC_CRON (name, description, schedule, enabled) VALUES
 -- Insert sample news article
 INSERT INTO GGC_NEWS (title, content, author, category, published) VALUES
 ('Welcome to WebEngine Slim!', 'Welcome to the new WebEngine CMS built with Slim Framework. Enjoy all the features of the original WebEngine with modern PHP standards and improved performance.', 'Admin', 'announcement', 1);
+GO
 
 -- ==============================================
 -- VIEWS FOR EASIER QUERYING
@@ -360,6 +378,7 @@ SELECT
 FROM Guild g
 LEFT JOIN GuildMember gm ON g.G_Name = gm.G_Name
 GROUP BY g.G_Name, g.G_Master, g.G_Score;
+GO
 
 -- ==============================================
 -- STORED PROCEDURES
