@@ -1,8 +1,17 @@
 {% extends "layout.twig" %}
 
 {% block content %}
-<!-- Hero Slider (opcional) -->
-{% block hero %}{% endblock %}
+<!-- Hero Slider -->
+<div class="hero-slider">
+    <div class="slider-content">
+        <h1><i class="fa fa-gamepad"></i> Welcome to {{ server_name }}</h1>
+        <p>Experience the best MU Online private server with high rates, unique features, and an active community!</p>
+        <div>
+            <a href="/register" class="btn btn-primary btn-lg"><i class="fa fa-user-plus"></i> Create Account</a>
+            <a href="/downloads" class="btn btn-secondary btn-lg"><i class="fa fa-download"></i> Download Client</a>
+        </div>
+    </div>
+</div>
 
 <!-- Main Content Grid -->
 <div class="layout-grid">
@@ -19,7 +28,6 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-        {% block sidebar %}
         <!-- Server Stats Widget -->
         <div class="widget">
             <div class="widget-title">
@@ -88,7 +96,48 @@
                 </li>
             </ul>
         </div>
-        {% endblock %}
+
+        <!-- Top Players Widget -->
+        <div class="widget">
+            <div class="widget-title">
+                <i class="fa fa-star"></i> Top Players
+            </div>
+            {% if top_players %}
+                <table class="table table-condensed" style="margin-bottom: 0;">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px;">#</th>
+                            <th>Name</th>
+                            <th style="text-align: right;">Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for player in top_players|slice(0, 5) %}
+                        <tr>
+                            <td><span class="label label-default">{{ loop.index }}</span></td>
+                            <td>
+                                <a href="/profile/player/{{ player.Name }}" class="text-orange">
+                                    <strong>{{ player.Name }}</strong>
+                                </a>
+                            </td>
+                            <td style="text-align: right;">
+                                <span class="text-red"><strong>{{ player.cLevel }}</strong></span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div style="text-align: center; margin-top: 15px;">
+                    <a href="/rankings" class="btn btn-secondary btn-sm">
+                        View All Rankings <i class="fa fa-arrow-right"></i>
+                    </a>
+                </div>
+            {% else %}
+                <p class="text-center" style="padding: 20px 0; color: var(--text-secondary);">
+                    No players yet. Be the first!
+                </p>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}
