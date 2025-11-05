@@ -1,0 +1,197 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<div class="rankings-container">
+    <!-- Sidebar de Opções -->
+    <aside class="rankings-sidebar">
+        <div class="widget">
+            <div class="widget-title">
+                <i class="fa fa-trophy"></i> Rankings
+            </div>
+            <ul class="rankings-menu">
+                <li class="{{ current_ranking == 'level' ? 'active' : '' }}">
+                    <a href="/rankings/level">
+                        <i class="fa fa-level-up"></i>
+                        <span>Top Level</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="{{ current_ranking == 'resets' ? 'active' : '' }}">
+                    <a href="/rankings/resets">
+                        <i class="fa fa-refresh"></i>
+                        <span>Top Resets</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="{{ current_ranking == 'master' ? 'active' : '' }}">
+                    <a href="/rankings/master">
+                        <i class="fa fa-star"></i>
+                        <span>Master Level</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="{{ current_ranking == 'guilds' ? 'active' : '' }}">
+                    <a href="/rankings/guilds">
+                        <i class="fa fa-users"></i>
+                        <span>Top Guilds</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="{{ current_ranking == 'killers' ? 'active' : '' }}">
+                    <a href="/rankings/killers">
+                        <i class="fa fa-crosshairs"></i>
+                        <span>Top Killers</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="{{ current_ranking == 'online' ? 'active' : '' }}">
+                    <a href="/rankings/online">
+                        <i class="fa fa-circle text-success"></i>
+                        <span>Online Players</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="{{ current_ranking == 'gens' ? 'active' : '' }}">
+                    <a href="/rankings/gens">
+                        <i class="fa fa-shield"></i>
+                        <span>Gens Ranking</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="{{ current_ranking == 'grandresets' ? 'active' : '' }}">
+                    <a href="/rankings/grandresets">
+                        <i class="fa fa-diamond"></i>
+                        <span>Grand Resets</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="{{ current_ranking == 'votes' ? 'active' : '' }}">
+                    <a href="/rankings/votes">
+                        <i class="fa fa-thumbs-up"></i>
+                        <span>Top Voters</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Widget de Info -->
+        <div class="widget">
+            <div class="widget-title">
+                <i class="fa fa-info-circle"></i> Information
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+                Rankings are updated in real-time. Click on a player's name to view their profile.
+            </p>
+        </div>
+    </aside>
+
+    <!-- Área de Conteúdo -->
+    <main class="rankings-content">
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    <i class="fa fa-{{ ranking_icon|default('trophy') }}"></i>
+                    {% block ranking_title %}Rankings{% endblock %}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% block ranking_content %}
+                    <p class="text-center" style="padding: 40px 0;">Select a ranking type from the menu.</p>
+                {% endblock %}
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+.rankings-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.rankings-sidebar {
+    position: sticky;
+    top: 90px;
+    height: fit-content;
+}
+
+.rankings-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.rankings-menu li {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.rankings-menu li:last-child {
+    border-bottom: none;
+}
+
+.rankings-menu li a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.rankings-menu li a i:first-child {
+    margin-right: 12px;
+    color: var(--accent-red);
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+.rankings-menu li a span {
+    flex: 1;
+    font-weight: 500;
+}
+
+.rankings-menu li a i:last-child {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+}
+
+.rankings-menu li a:hover {
+    background: var(--hover-bg);
+    color: var(--accent-orange);
+    padding-left: 20px;
+}
+
+.rankings-menu li a:hover i:last-child {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.rankings-menu li.active a {
+    background: var(--secondary-bg);
+    color: var(--accent-red);
+    font-weight: 600;
+    border-left: 3px solid var(--accent-red);
+}
+
+.rankings-content {
+    min-height: 500px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .rankings-container {
+        grid-template-columns: 1fr;
+    }
+
+    .rankings-sidebar {
+        position: static;
+    }
+}
+</style>
+{% endblock %}

@@ -28,16 +28,16 @@ class Account
 
     public function create(array $data): bool
     {
-        $sql = "INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, mail_addr, phon_numb, country)
+        $sql = "INSERT INTO MEMB_INFO (memb___id, memb__pwd, memb_name, sno__numb, bloc_code, mail_addr, country)
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         return $this->db->execute($sql, [
             $data['username'],
             $data['password'],
             $data['name'] ?? $data['username'],
-            $data['social_number'] ?? '1234567890',
+            $data['social_number'] ?? '111111111         ',
+            0,
             $data['email'],
-            $data['phone'] ?? '',
             $data['country'] ?? 'BR'
         ]);
     }
