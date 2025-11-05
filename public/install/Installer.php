@@ -176,32 +176,62 @@ class Installer
             // Ler o arquivo schema.sql
             $schemaFile = $this->rootPath . '/database/schema.sql';
             if (!file_exists($schemaFile)) {
-                throw new Exception('Arquivo schema.sql não encontrado');
+                throw new Exception('Arquivo schema.sql não encontrado em: ' . $schemaFile);
             }
 
             $sql = file_get_contents($schemaFile);
 
+            // Remover comentários de linha única (-- comentário)
+            $sql = preg_replace('/--[^\n]*\n/', "\n", $sql);
+
+            // Remover comentários multi-linha (/* comentário */)
+            $sql = preg_replace('/\/\*.*?\*\//s', '', $sql);
+
             // Dividir em statements individuais (separados por GO)
-            $statements = array_filter(
-                array_map('trim', preg_split('/\bGO\b/i', $sql)),
-                function($stmt) {
-                    return !empty($stmt) && !preg_match('/^--/', $stmt);
-                }
-            );
+            $statements = preg_split('/^\s*GO\s*$/mi', $sql);
+
+            $executedCount = 0;
+            $errorCount = 0;
+            $errors = [];
 
             // Executar cada statement
-            foreach ($statements as $statement) {
-                if (!empty(trim($statement))) {
-                    try {
-                        $pdo->exec($statement);
-                    } catch (Exception $e) {
-                        // Ignorar erros de tabelas/colunas já existentes
-                        if (strpos($e->getMessage(), 'already exists') === false &&
-                            strpos($e->getMessage(), 'There is already') === false) {
-                            throw $e;
-                        }
-                    }
+            foreach ($statements as $index => $statement) {
+                $statement = trim($statement);
+
+                // Pular statements vazios
+                if (empty($statement)) {
+                    continue;
                 }
+
+                try {
+                    $pdo->exec($statement);
+                    $executedCount++;
+                } catch (Exception $e) {
+                    $errorMsg = $e->getMessage();
+
+                    // Ignorar erros de objetos já existentes
+                    if (
+                        strpos($errorMsg, 'already exists') !== false ||
+                        strpos($errorMsg, 'There is already') !== false ||
+                        strpos($errorMsg, 'Cannot drop the') !== false
+                    ) {
+                        // Erro aceitável, continuar
+                        continue;
+                    }
+
+                    // Erro crítico - registrar e lançar
+                    $errorCount++;
+                    $errors[] = "Statement #" . ($index + 1) . ": " . $errorMsg;
+
+                    // Para debug - salvar statement com problema
+                    $this->lastError = "Erro no SQL (statement #" . ($index + 1) . "): " . $errorMsg . "\n\nSQL: " . substr($statement, 0, 200);
+                    throw $e;
+                }
+            }
+
+            // Se nenhum statement foi executado, algo está errado
+            if ($executedCount === 0 && $errorCount === 0) {
+                throw new Exception('Nenhum comando SQL foi executado. Verifique o arquivo schema.sql');
             }
 
             return true;
@@ -263,16 +293,30 @@ class Installer
 
             $envContent = file_get_contents($envExample);
 
+            // Helper function to escape env values
+            $escapeEnvValue = function($value) {
+                // Se contém espaços, aspas ou caracteres especiais, precisa de aspas
+                if (empty($value)) {
+                    return '';
+                }
+                if (preg_match('/[\s"#]/', $value)) {
+                    // Escapar aspas duplas dentro do valor
+                    $value = str_replace('"', '\\"', $value);
+                    return '"' . $value . '"';
+                }
+                return $value;
+            };
+
             // Substituir valores do banco de dados
             $envContent = preg_replace('/DB_CONNECTION=.*/', 'DB_CONNECTION=' . ($dbConfig['db_connection'] ?? 'sqlsrv'), $envContent);
             $envContent = preg_replace('/DB_HOST=.*/', 'DB_HOST=' . ($dbConfig['db_host'] ?? 'localhost'), $envContent);
             $envContent = preg_replace('/DB_PORT=.*/', 'DB_PORT=' . ($dbConfig['db_port'] ?? '1433'), $envContent);
             $envContent = preg_replace('/DB_DATABASE=.*/', 'DB_DATABASE=' . ($dbConfig['db_database'] ?? 'MuOnline'), $envContent);
             $envContent = preg_replace('/DB_USERNAME=.*/', 'DB_USERNAME=' . ($dbConfig['db_username'] ?? 'sa'), $envContent);
-            $envContent = preg_replace('/DB_PASSWORD=.*/', 'DB_PASSWORD=' . ($dbConfig['db_password'] ?? ''), $envContent);
+            $envContent = preg_replace('/DB_PASSWORD=.*/', 'DB_PASSWORD=' . $escapeEnvValue($dbConfig['db_password'] ?? ''), $envContent);
 
             // Substituir configurações da aplicação
-            $envContent = preg_replace('/APP_NAME=.*/', 'APP_NAME="' . ($appConfig['app_name'] ?? 'WebEngine CMS') . '"', $envContent);
+            $envContent = preg_replace('/APP_NAME=.*/', 'APP_NAME=' . $escapeEnvValue($appConfig['app_name'] ?? 'WebEngine CMS'), $envContent);
             $envContent = preg_replace('/APP_URL=.*/', 'APP_URL=' . ($appConfig['app_url'] ?? 'http://localhost'), $envContent);
             $envContent = preg_replace('/APP_ENV=.*/', 'APP_ENV=' . ($appConfig['app_env'] ?? 'production'), $envContent);
 
@@ -280,9 +324,9 @@ class Installer
             if (!empty($appConfig['mail_host'])) {
                 $envContent = preg_replace('/MAIL_HOST=.*/', 'MAIL_HOST=' . $appConfig['mail_host'], $envContent);
                 $envContent = preg_replace('/MAIL_PORT=.*/', 'MAIL_PORT=' . ($appConfig['mail_port'] ?? '587'), $envContent);
-                $envContent = preg_replace('/MAIL_USERNAME=.*/', 'MAIL_USERNAME=' . ($appConfig['mail_username'] ?? ''), $envContent);
-                $envContent = preg_replace('/MAIL_PASSWORD=.*/', 'MAIL_PASSWORD=' . ($appConfig['mail_password'] ?? ''), $envContent);
-                $envContent = preg_replace('/MAIL_FROM_ADDRESS=.*/', 'MAIL_FROM_ADDRESS=' . ($appConfig['mail_from'] ?? ''), $envContent);
+                $envContent = preg_replace('/MAIL_USERNAME=.*/', 'MAIL_USERNAME=' . $escapeEnvValue($appConfig['mail_username'] ?? ''), $envContent);
+                $envContent = preg_replace('/MAIL_PASSWORD=.*/', 'MAIL_PASSWORD=' . $escapeEnvValue($appConfig['mail_password'] ?? ''), $envContent);
+                $envContent = preg_replace('/MAIL_FROM_ADDRESS=.*/', 'MAIL_FROM_ADDRESS=' . $escapeEnvValue($appConfig['mail_from'] ?? ''), $envContent);
             }
 
             // Gerar JWT secret aleatório
