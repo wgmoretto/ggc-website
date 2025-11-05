@@ -21,7 +21,7 @@
                 <p>Have a question or need support? Send us a message and we'll get back to you as soon as possible.</p>
 
                 <form method="POST" action="/contact">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="form-group">
                         <label for="name">Your Name</label>

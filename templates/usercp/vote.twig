@@ -48,7 +48,7 @@
                                     <i class="fa fa-external-link"></i> Vote Now
                                 </a>
                                 <form method="POST" action="/usercp/vote" style="margin-top: 10px;">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <input type="hidden" name="site_id" value="{{ site.id }}">
                                     <button type="submit" class="btn btn-success">
                                         <i class="fa fa-check"></i> Claim Reward

@@ -60,6 +60,48 @@
 
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <!-- CSRF Token Auto-Injection -->
+    <script>
+    (function() {
+        // Get CSRF token from meta tag or global variable
+        var csrfToken = '{{ csrf_token() }}';
+
+        // Auto-inject CSRF token into all forms on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            injectCsrfTokens();
+        });
+
+        // Also inject on AJAX complete (for dynamically loaded content)
+        if (typeof jQuery !== 'undefined') {
+            jQuery(document).ajaxComplete(function() {
+                injectCsrfTokens();
+            });
+        }
+
+        function injectCsrfTokens() {
+            var forms = document.querySelectorAll('form[method="POST"], form[method="post"], form[method="PUT"], form[method="put"], form[method="DELETE"], form[method="delete"]');
+
+            forms.forEach(function(form) {
+                // Check if form already has csrf_token field
+                var existingToken = form.querySelector('input[name="csrf_token"]');
+
+                if (!existingToken) {
+                    // Create and inject CSRF token input
+                    var input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'csrf_token';
+                    input.value = csrfToken;
+                    form.insertBefore(input, form.firstChild);
+                } else {
+                    // Update existing token value (in case it was empty or wrong)
+                    existingToken.value = csrfToken;
+                }
+            });
+        }
+    })();
+    </script>
+
     {% block scripts %}{% endblock %}
 </body>
 </html>

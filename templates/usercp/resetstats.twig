@@ -33,7 +33,7 @@
                 </div>
 
                 <form method="POST" action="/usercp/resetstats" onsubmit="return confirm('Are you sure you want to reset stats for this character?');">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="form-group">
                         <label for="character">Select Character</label>
