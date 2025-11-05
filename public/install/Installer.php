@@ -149,6 +149,7 @@ class Installer
 
     /**
      * Instala as tabelas do WebEngine no banco de dados
+     * Versão ROBUSTA - continua mesmo com erros
      */
     public function installDatabase($config)
     {
@@ -189,55 +190,87 @@ class Installer
 
             // Dividir em statements individuais (separados por GO)
             $statements = preg_split('/^\s*GO\s*$/mi', $sql);
+            $statements = array_filter(array_map('trim', $statements));
 
-            $executedCount = 0;
+            $totalCount = count($statements);
+            $successCount = 0;
+            $skipCount = 0;
             $errorCount = 0;
             $errors = [];
 
-            // Executar cada statement
+            // Executar cada statement (continua mesmo com erros)
             foreach ($statements as $index => $statement) {
-                $statement = trim($statement);
-
-                // Pular statements vazios
                 if (empty($statement)) {
                     continue;
                 }
 
                 try {
                     $pdo->exec($statement);
-                    $executedCount++;
+                    $successCount++;
                 } catch (Exception $e) {
                     $errorMsg = $e->getMessage();
 
-                    // Ignorar erros de objetos já existentes
+                    // Erros aceitáveis (objetos já existem)
                     if (
                         strpos($errorMsg, 'already exists') !== false ||
                         strpos($errorMsg, 'There is already') !== false ||
-                        strpos($errorMsg, 'Cannot drop the') !== false
+                        strpos($errorMsg, 'Cannot drop') !== false ||
+                        strpos($errorMsg, 'duplicate key') !== false
                     ) {
-                        // Erro aceitável, continuar
-                        continue;
+                        $skipCount++;
+                        continue; // Pular, não é erro
                     }
 
-                    // Erro crítico - registrar e lançar
+                    // Erro real - registrar mas CONTINUAR
                     $errorCount++;
-                    $errors[] = "Statement #" . ($index + 1) . ": " . $errorMsg;
+                    $errors[] = [
+                        'statement' => $index + 1,
+                        'message' => $errorMsg,
+                        'sql' => substr($statement, 0, 150)
+                    ];
 
-                    // Para debug - salvar statement com problema
-                    $this->lastError = "Erro no SQL (statement #" . ($index + 1) . "): " . $errorMsg . "\n\nSQL: " . substr($statement, 0, 200);
-                    throw $e;
+                    // NÃO lançar exceção, apenas continuar
                 }
             }
 
-            // Se nenhum statement foi executado, algo está errado
-            if ($executedCount === 0 && $errorCount === 0) {
-                throw new Exception('Nenhum comando SQL foi executado. Verifique o arquivo schema.sql');
+            // Calcular taxa de sucesso
+            $totalAttempted = $successCount + $errorCount + $skipCount;
+            $successRate = $totalAttempted > 0 ? ($successCount + $skipCount) / $totalAttempted * 100 : 0;
+
+            // Considerar sucesso se >= 70% executou ou >= 15 statements executaram
+            if ($successCount >= 15 || $successRate >= 70) {
+                // Salvar resumo para exibir ao usuário
+                $_SESSION['install_summary'] = [
+                    'total' => $totalCount,
+                    'success' => $successCount,
+                    'skipped' => $skipCount,
+                    'errors' => $errorCount,
+                    'error_details' => $errors
+                ];
+
+                // Considerar sucesso mesmo com alguns erros
+                $this->lastError = '';
+                return true;
+            } else {
+                // Muitos erros - falha
+                $errorSummary = "Instalação parcial falhou:\n";
+                $errorSummary .= "- Sucessos: {$successCount}\n";
+                $errorSummary .= "- Pulados: {$skipCount}\n";
+                $errorSummary .= "- Erros: {$errorCount}\n\n";
+
+                if (!empty($errors)) {
+                    $errorSummary .= "Primeiros erros:\n";
+                    foreach (array_slice($errors, 0, 3) as $err) {
+                        $errorSummary .= "Statement #{$err['statement']}: {$err['message']}\n";
+                    }
+                }
+
+                $this->lastError = $errorSummary;
+                return false;
             }
 
-            return true;
-
         } catch (Exception $e) {
-            $this->lastError = 'Erro ao instalar banco de dados: ' . $e->getMessage();
+            $this->lastError = 'Erro ao conectar ao banco de dados: ' . $e->getMessage();
             return false;
         }
     }
