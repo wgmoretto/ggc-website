@@ -1,0 +1,51 @@
+{% extends "layout.twig" %}
+
+{% block title %}Guild Rankings - {{ server_name }}{% endblock %}
+
+{% block content %}
+<h1><i class="fa fa-users"></i> Top Guilds</h1>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">Guild Rankings - Top 50</h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Guild Name</th>
+                    <th>Guild Master</th>
+                    <th>Score</th>
+                    <th>Members</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for guild in rankings %}
+                <tr>
+                    <td>
+                        {% if loop.index <= 3 %}
+                            <i class="fa fa-trophy" style="color: {% if loop.index == 1 %}gold{% elseif loop.index == 2 %}silver{% else %}#CD7F32{% endif %};"></i>
+                        {% else %}
+                            {{ loop.index }}
+                        {% endif %}
+                    </td>
+                    <td><a href="/profile/guild/{{ guild.G_Name }}">{{ guild.G_Name }}</a></td>
+                    <td><a href="/profile/player/{{ guild.G_Master }}">{{ guild.G_Master }}</a></td>
+                    <td><span class="label label-warning">{{ guild.G_Score }}</span></td>
+                    <td><span class="label label-info">{{ guild.MemberCount }}</span></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No guilds found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<a href="/rankings" class="btn btn-default">
+    <i class="fa fa-arrow-left"></i> Back to Rankings
+</a>
+{% endblock %}

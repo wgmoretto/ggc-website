@@ -1,0 +1,50 @@
+{% extends "layout.twig" %}
+
+{% block title %}Refund Policy - {{ server_name }}{% endblock %}
+
+{% block content %}
+<h1>Refund Policy</h1>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h3>General Policy</h3>
+        <p>As stated in our Terms of Service, all donations to {{ server_name }} are <strong>voluntary and non-refundable</strong>.</p>
+
+        <h3>Why No Refunds?</h3>
+        <p>When you make a donation, you receive credits immediately, which can be used for various in-game services. Since these services are provided instantly and cannot be "returned," we cannot offer refunds.</p>
+
+        <h3>Exceptions</h3>
+        <p>Refunds may be considered only in the following exceptional circumstances:</p>
+        <ul>
+            <li><strong>Technical Error:</strong> If you were charged but did not receive credits due to a technical error on our end</li>
+            <li><strong>Duplicate Charges:</strong> If you were charged multiple times for the same transaction</li>
+            <li><strong>Unauthorized Transaction:</strong> If someone made an unauthorized payment using your account</li>
+        </ul>
+
+        <h3>How to Request a Refund</h3>
+        <p>If you believe you qualify for a refund under the exceptional circumstances listed above:</p>
+        <ol>
+            <li><a href="/contact">Contact us</a> within 48 hours of the transaction</li>
+            <li>Provide your transaction ID and detailed explanation</li>
+            <li>Wait for our team to review your request</li>
+        </ol>
+
+        <h3>Refund Processing</h3>
+        <ul>
+            <li>Refund requests are reviewed within 3-5 business days</li>
+            <li>Approved refunds are processed through PayPal</li>
+            <li>It may take 5-10 business days for the refund to appear in your account</li>
+        </ul>
+
+        <h3>Chargebacks</h3>
+        <p class="text-danger">
+            <strong>Warning:</strong> Filing a chargeback without contacting us first will result in immediate and permanent account termination. Please contact us to resolve any issues before initiating a chargeback.
+        </p>
+
+        <h3>Questions?</h3>
+        <p>If you have any questions about our refund policy, please <a href="/contact">contact us</a>.</p>
+
+        <p class="text-muted"><small>Last updated: {{ "now"|date("Y-m-d") }}</small></p>
+    </div>
+</div>
+{% endblock %}

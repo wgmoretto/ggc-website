@@ -1,0 +1,36 @@
+{
+    "name": "webengine/slim-cms",
+    "description": "WebEngine CMS powered by Slim Framework - MU Online Server Management",
+    "type": "project",
+    "license": "MIT",
+    "version": "2.0.0",
+    "require": {
+        "php": ">=8.1",
+        "slim/slim": "^4.12",
+        "slim/psr7": "^1.6",
+        "slim/twig-view": "^3.3",
+        "phpmailer/phpmailer": "^6.8",
+        "vlucas/phpdotenv": "^5.5",
+        "monolog/monolog": "^3.5",
+        "league/flysystem": "^3.23",
+        "symfony/cache": "^6.4",
+        "firebase/php-jwt": "^6.10",
+        "respect/validation": "^2.3",
+        "stripe/stripe-php": "^13.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "WebEngine\\": "src/"
+        }
+    },
+    "config": {
+        "process-timeout": 0,
+        "sort-packages": true,
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}

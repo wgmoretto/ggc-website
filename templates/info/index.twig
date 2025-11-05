@@ -1,0 +1,74 @@
+{% extends "layout.twig" %}
+
+{% block title %}Server Information - {{ server_name }}{% endblock %}
+
+{% block content %}
+<h1><i class="fa fa-info-circle"></i> Server Information</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Server Details</h3>
+            </div>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt>Server Name:</dt>
+                    <dd>{{ server_name }}</dd>
+
+                    <dt>Version:</dt>
+                    <dd>{{ env('SERVER_VERSION', 'Season 6') }}</dd>
+
+                    <dt>Experience Rate:</dt>
+                    <dd>{{ env('SERVER_EXP_RATE', '1000') }}x</dd>
+
+                    <dt>Drop Rate:</dt>
+                    <dd>{{ env('SERVER_DROP_RATE', '50') }}%</dd>
+
+                    <dt>Max Resets:</dt>
+                    <dd>{{ env('SERVER_MAX_RESETS', '10') }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Features</h3>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    <li>Reset System</li>
+                    <li>Grand Reset System</li>
+                    <li>Master Level System</li>
+                    <li>Castle Siege Events</li>
+                    <li>PvP System</li>
+                    <li>Gens/Family System</li>
+                    <li>Vote Rewards</li>
+                    <li>Donation System</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title">How to Connect</h3>
+            </div>
+            <div class="panel-body">
+                <ol>
+                    <li><a href="/downloads">Download</a> the game client</li>
+                    <li><a href="/register">Create an account</a></li>
+                    <li>Extract the client files to your desired location</li>
+                    <li>Run the game launcher</li>
+                    <li>Login with your credentials and start playing!</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

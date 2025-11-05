@@ -1,0 +1,113 @@
+{% extends "layout.twig" %}
+
+{% block title %}Castle Siege - {{ server_name }}{% endblock %}
+
+{% block content %}
+<h1><i class="fa fa-fort-awesome"></i> Castle Siege</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-crown"></i> Current Castle Owner</h3>
+            </div>
+            <div class="panel-body text-center">
+                {% if owner and owner.OWNER_GUILD %}
+                    <h2><a href="/profile/guild/{{ owner.OWNER_GUILD }}">{{ owner.OWNER_GUILD }}</a></h2>
+                    {% if owner.GuildInfo %}
+                    <p><strong>Guild Master:</strong> <a href="/profile/player/{{ owner.GuildInfo.G_Master }}">{{ owner.GuildInfo.G_Master }}</a></p>
+                    <p><strong>Guild Score:</strong> <span class="label label-warning">{{ owner.GuildInfo.G_Score }}</span></p>
+                    {% endif %}
+                {% else %}
+                    <h3 class="text-muted">No Guild Currently Owns the Castle</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-calendar"></i> Next Siege Schedule</h3>
+            </div>
+            <div class="panel-body">
+                {% if schedule %}
+                <dl class="dl-horizontal">
+                    <dt>Start Date:</dt>
+                    <dd>{{ schedule.SIEGE_START_DATE }}</dd>
+
+                    <dt>End Date:</dt>
+                    <dd>{{ schedule.SIEGE_END_DATE }}</dd>
+
+                    <dt>Start Time:</dt>
+                    <dd>{{ schedule.SIEGE_STIME }}</dd>
+
+                    <dt>End Time:</dt>
+                    <dd>{{ schedule.SIEGE_ETIME }}</dd>
+                </dl>
+                {% else %}
+                <p class="text-muted">Schedule not available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-flag"></i> Registered Guilds</h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Guild Name</th>
+                    <th>Guild Master</th>
+                    <th>Marks</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for guild in registered_guilds %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td><a href="/profile/guild/{{ guild.REG_SIEGE_GUILD }}">{{ guild.REG_SIEGE_GUILD }}</a></td>
+                    <td><a href="/profile/player/{{ guild.G_Master }}">{{ guild.G_Master }}</a></td>
+                    <td><span class="label label-primary">{{ guild.REG_MARKS }}</span></td>
+                    <td><span class="label label-warning">{{ guild.G_Score }}</span></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No guilds registered for the next siege</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="panel panel-warning">
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-info-circle"></i> About Castle Siege</h3>
+    </div>
+    <div class="panel-body">
+        <p>Castle Siege is a massive guild vs guild event where guilds compete to conquer and defend the castle.</p>
+
+        <h4>How to Participate:</h4>
+        <ol>
+            <li>Your guild must be registered for the event</li>
+            <li>Guild members need to prepare by collecting the required marks</li>
+            <li>During the siege, attack or defend the castle</li>
+            <li>The guild that controls the castle at the end wins!</li>
+        </ol>
+
+        <h4>Rewards:</h4>
+        <ul>
+            <li>The winning guild's master becomes the Lord of the Castle</li>
+            <li>Guild members receive special benefits and tax income</li>
+            <li>Access to exclusive castle areas and NPCs</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ character.Name }} - Player Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/">Home</a></li>
+            <li><a href="/rankings">Rankings</a></li>
+            <li class="active">{{ character.Name }}</li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-user"></i> Character Information</h3>
+            </div>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt>Name:</dt>
+                    <dd><strong>{{ character.Name }}</strong></dd>
+
+                    <dt>Class:</dt>
+                    <dd>{{ character.ClassName }}</dd>
+
+                    <dt>Level:</dt>
+                    <dd><span class="label label-success">{{ character.cLevel }}</span></dd>
+
+                    <dt>Resets:</dt>
+                    <dd><span class="label label-primary">{{ character.Resets|default(0) }}</span></dd>
+
+                    {% if character.GrandResets is defined and character.GrandResets > 0 %}
+                    <dt>Grand Resets:</dt>
+                    <dd><span class="label label-danger">{{ character.GrandResets }}</span></dd>
+                    {% endif %}
+
+                    <dt>PK Count:</dt>
+                    <dd><span class="label label-{{ character.PkCount > 0 ? 'danger' : 'default' }}">{{ character.PkCount|default(0) }}</span></dd>
+
+                    <dt>Current Map:</dt>
+                    <dd>Map {{ character.MapNumber }}</dd>
+
+                    <dt>Status:</dt>
+                    <dd>
+                        {% if character.CtlCode == 0 %}
+                            <span class="label label-success">Active</span>
+                        {% else %}
+                            <span class="label label-warning">Blocked</span>
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-bar-chart"></i> Statistics</h3>
+            </div>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt>Strength:</dt>
+                    <dd>{{ character.Strength|default(0) }}</dd>
+
+                    <dt>Dexterity:</dt>
+                    <dd>{{ character.Dexterity|default(0) }}</dd>
+
+                    <dt>Vitality:</dt>
+                    <dd>{{ character.Vitality|default(0) }}</dd>
+
+                    <dt>Energy:</dt>
+                    <dd>{{ character.Energy|default(0) }}</dd>
+
+                    <dt>Available Points:</dt>
+                    <dd><span class="label label-warning">{{ character.LevelUpPoint|default(0) }}</span></dd>
+
+                    {% if character.MasterLevel is defined and character.MasterLevel > 0 %}
+                    <dt>Master Level:</dt>
+                    <dd><span class="label label-success">{{ character.MasterLevel }}</span></dd>
+                    {% endif %}
+                </dl>
+            </div>
+        </div>
+
+        {% if guild %}
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-users"></i> Guild</h3>
+            </div>
+            <div class="panel-body text-center">
+                <h4><a href="/profile/guild/{{ guild.G_Name }}">{{ guild.G_Name }}</a></h4>
+                <p><strong>Guild Master:</strong> {{ guild.G_Master }}</p>
+                <p><strong>Score:</strong> {{ guild.G_Score }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

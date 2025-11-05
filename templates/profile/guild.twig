@@ -1,0 +1,93 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ guild.G_Name }} - Guild Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/">Home</a></li>
+            <li><a href="/rankings/guilds">Guilds</a></li>
+            <li class="active">{{ guild.G_Name }}</li>
+        </ol>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-users"></i> {{ guild.G_Name }}</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="dl-horizontal">
+                            <dt>Guild Master:</dt>
+                            <dd><a href="/profile/player/{{ guild.G_Master }}">{{ guild.G_Master }}</a></dd>
+
+                            <dt>Guild Score:</dt>
+                            <dd><span class="label label-warning">{{ guild.G_Score }}</span></dd>
+
+                            <dt>Total Members:</dt>
+                            <dd><span class="label label-info">{{ guild.MemberCount }}</span></dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        {% if guild.G_Notice %}
+                        <h4>Guild Notice:</h4>
+                        <blockquote>{{ guild.G_Notice }}</blockquote>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-list"></i> Guild Members</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Character</th>
+                            <th>Class</th>
+                            <th>Level</th>
+                            <th>Resets</th>
+                            <th>Rank</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for member in guild.Members %}
+                        <tr>
+                            <td><a href="/profile/player/{{ member.Name }}">{{ member.Name }}</a></td>
+                            <td>{{ member.ClassName }}</td>
+                            <td><span class="label label-success">{{ member.cLevel }}</span></td>
+                            <td><span class="label label-primary">{{ member.Resets|default(0) }}</span></td>
+                            <td>
+                                {% if member.RankName == 'Guild Master' %}
+                                    <span class="label label-danger">{{ member.RankName }}</span>
+                                {% elseif member.RankName == 'Assistant' %}
+                                    <span class="label label-warning">{{ member.RankName }}</span>
+                                {% else %}
+                                    <span class="label label-default">{{ member.RankName }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No members found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "layout.twig" %}
+
+{% block title %}Rankings - {{ server_name }}{% endblock %}
+
+{% block content %}
+<h1>Server Rankings</h1>
+
+<div class="row">
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Level Rankings</div>
+            <div class="panel-body text-center">
+                <i class="fa fa-trophy fa-3x"></i>
+                <p class="lead">Top Level Players</p>
+                <a href="/rankings/level" class="btn btn-primary">View</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-success">
+            <div class="panel-heading">Reset Rankings</div>
+            <div class="panel-body text-center">
+                <i class="fa fa-repeat fa-3x"></i>
+                <p class="lead">Most Resets</p>
+                <a href="/rankings/resets" class="btn btn-success">View</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">Guild Rankings</div>
+            <div class="panel-body text-center">
+                <i class="fa fa-users fa-3x"></i>
+                <p class="lead">Top Guilds</p>
+                <a href="/rankings/guilds" class="btn btn-info">View</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-danger">
+            <div class="panel-heading">PK Rankings</div>
+            <div class="panel-body text-center">
+                <i class="fa fa-crosshairs fa-3x"></i>
+                <p class="lead">Top Killers</p>
+                <a href="/rankings/killers" class="btn btn-danger">View</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-warning">
+            <div class="panel-heading">Online Players</div>
+            <div class="panel-body text-center">
+                <i class="fa fa-circle fa-3x"></i>
+                <p class="lead">Currently Online</p>
+                <a href="/rankings/online" class="btn btn-warning">View</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">Voter Rankings</div>
+            <div class="panel-body text-center">
+                <i class="fa fa-check-square fa-3x"></i>
+                <p class="lead">Top Voters</p>
+                <a href="/rankings/votes" class="btn btn-default">View</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Master Level</div>
+            <div class="panel-body text-center">
+                <i class="fa fa-star fa-3x"></i>
+                <p class="lead">Master Rankings</p>
+                <a href="/rankings/master" class="btn btn-primary">View</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="panel panel-success">
+            <div class="panel-heading">Grand Resets</div>
+            <div class="panel-body text-center">
+                <i class="fa fa-bolt fa-3x"></i>
+                <p class="lead">Grand Reset Rankings</p>
+                <a href="/rankings/grandresets" class="btn btn-success">View</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

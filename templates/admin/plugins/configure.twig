@@ -1,0 +1,126 @@
+{% extends "layout.twig" %}
+
+{% block title %}Configure {{ plugin.name }} - Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/admincp">Dashboard</a></li>
+            <li><a href="/admincp/plugins">Plugins</a></li>
+            <li class="active">Configure {{ plugin.name }}</li>
+        </ol>
+    </div>
+</div>
+
+<h1><i class="fa fa-cog"></i> Configure {{ plugin.name }}</h1>
+
+{% if session.success %}
+<div class="alert alert-success">{{ session.success }}</div>
+{% endif %}
+
+{% if session.error %}
+<div class="alert alert-danger">{{ session.error }}</div>
+{% endif %}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Plugin Configuration</h3>
+    </div>
+    <div class="panel-body">
+        <form method="POST" action="/admincp/plugins/{{ plugin_name }}/configure">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            {% if plugin_name == 'PayPal' %}
+                <div class="alert alert-info">
+                    <strong>PayPal Configuration:</strong> Get your API credentials from the
+                    <a href="https://developer.paypal.com/" target="_blank">PayPal Developer Dashboard</a>.
+                </div>
+
+                <div class="form-group">
+                    <label for="business_email">Business Email</label>
+                    <input type="email" class="form-control" id="business_email" name="business_email"
+                           value="{{ plugin.config.business_email|default('') }}">
+                    <p class="help-block">Your PayPal business email address</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="mode">Mode</label>
+                    <select class="form-control" id="mode" name="mode">
+                        <option value="sandbox" {% if plugin.config.mode == 'sandbox' %}selected{% endif %}>Sandbox (Test)</option>
+                        <option value="live" {% if plugin.config.mode == 'live' %}selected{% endif %}>Live (Production)</option>
+                    </select>
+                    <p class="help-block">Use sandbox for testing, live for production</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="currency">Currency</label>
+                    <select class="form-control" id="currency" name="currency">
+                        <option value="USD" {% if plugin.config.currency == 'USD' %}selected{% endif %}>USD - US Dollar</option>
+                        <option value="EUR" {% if plugin.config.currency == 'EUR' %}selected{% endif %}>EUR - Euro</option>
+                        <option value="GBP" {% if plugin.config.currency == 'GBP' %}selected{% endif %}>GBP - British Pound</option>
+                        <option value="BRL" {% if plugin.config.currency == 'BRL' %}selected{% endif %}>BRL - Brazilian Real</option>
+                    </select>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>Webhook URL:</strong> Configure this URL in your PayPal settings:<br>
+                    <code>{{ app_url }}/api/plugins/PayPal/webhook</code>
+                </div>
+
+            {% elseif plugin_name == 'Stripe' %}
+                <div class="alert alert-info">
+                    <strong>Stripe Configuration:</strong> Get your API keys from the
+                    <a href="https://dashboard.stripe.com/apikeys" target="_blank">Stripe Dashboard</a>.
+                </div>
+
+                <div class="form-group">
+                    <label for="publishable_key">Publishable Key</label>
+                    <input type="text" class="form-control" id="publishable_key" name="publishable_key"
+                           value="{{ plugin.config.publishable_key|default('') }}">
+                    <p class="help-block">Your Stripe publishable key (starts with pk_)</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="secret_key">Secret Key</label>
+                    <input type="password" class="form-control" id="secret_key" name="secret_key"
+                           value="{{ plugin.config.secret_key|default('') }}">
+                    <p class="help-block">Your Stripe secret key (starts with sk_)</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="webhook_secret">Webhook Secret</label>
+                    <input type="password" class="form-control" id="webhook_secret" name="webhook_secret"
+                           value="{{ plugin.config.webhook_secret|default('') }}">
+                    <p class="help-block">Your Stripe webhook signing secret (starts with whsec_)</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="currency">Currency</label>
+                    <select class="form-control" id="currency" name="currency">
+                        <option value="usd" {% if plugin.config.currency == 'usd' %}selected{% endif %}>USD - US Dollar</option>
+                        <option value="eur" {% if plugin.config.currency == 'eur' %}selected{% endif %}>EUR - Euro</option>
+                        <option value="gbp" {% if plugin.config.currency == 'gbp' %}selected{% endif %}>GBP - British Pound</option>
+                        <option value="brl" {% if plugin.config.currency == 'brl' %}selected{% endif %}>BRL - Brazilian Real</option>
+                    </select>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>Webhook URL:</strong> Add this URL as a webhook endpoint in your Stripe Dashboard:<br>
+                    <code>{{ app_url }}/api/plugins/Stripe/webhook</code><br>
+                    <small>Enable events: checkout.session.completed, payment_intent.succeeded, payment_intent.payment_failed</small>
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fa fa-save"></i> Save Configuration
+            </button>
+            <a href="/admincp/plugins" class="btn btn-default">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<a href="/admincp/plugins" class="btn btn-default">
+    <i class="fa fa-arrow-left"></i> Back to Plugins
+</a>
+{% endblock %}

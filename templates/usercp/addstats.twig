@@ -1,0 +1,140 @@
+{% extends "layout.twig" %}
+
+{% block title %}Add Stats - {{ server_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        {% include 'usercp/sidebar.twig' %}
+    </div>
+
+    <div class="col-md-9">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-plus-circle"></i> Add Stats to Character</h3>
+            </div>
+            <div class="panel-body">
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                {% if success %}
+                <div class="alert alert-success">{{ success }}</div>
+                {% endif %}
+
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle"></i>
+                    Distribute your available stat points to your character's attributes.
+                </div>
+
+                <form method="POST" action="/usercp/addstats" id="addStatsForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <div class="form-group">
+                        <label for="character">Select Character</label>
+                        <select class="form-control" id="character" name="character" required>
+                            <option value="">-- Choose a character --</option>
+                            {% for char in characters %}
+                            <option value="{{ char.Name }}" data-points="{{ char.LevelUpPoint|default(0) }}">
+                                {{ char.Name }} (Level {{ char.cLevel }}) - {{ char.LevelUpPoint|default(0) }} points available
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div id="statsPanel" style="display:none;">
+                        <h4>Available Points: <span id="availablePoints" class="label label-success">0</span></h4>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="strength">Strength</label>
+                                    <input type="number" class="form-control stat-input" id="strength" name="strength" min="0" value="0">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="dexterity">Dexterity</label>
+                                    <input type="number" class="form-control stat-input" id="dexterity" name="dexterity" min="0" value="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="vitality">Vitality</label>
+                                    <input type="number" class="form-control stat-input" id="vitality" name="vitality" min="0" value="0">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="energy">Energy</label>
+                                    <input type="number" class="form-control stat-input" id="energy" name="energy" min="0" value="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning" id="pointsWarning" style="display:none;">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            You have allocated more points than available!
+                        </div>
+
+                        <button type="submit" class="btn btn-success" id="submitBtn">
+                            <i class="fa fa-check"></i> Add Stats
+                        </button>
+                        <button type="button" class="btn btn-default" onclick="resetForm()">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    var maxPoints = 0;
+
+    $('#character').change(function() {
+        var selected = $(this).find(':selected');
+        maxPoints = parseInt(selected.data('points')) || 0;
+
+        if (maxPoints > 0) {
+            $('#availablePoints').text(maxPoints);
+            $('#statsPanel').show();
+            resetForm();
+        } else {
+            $('#statsPanel').hide();
+            alert('This character has no available stat points!');
+        }
+    });
+
+    $('.stat-input').on('input', function() {
+        var total = 0;
+        $('.stat-input').each(function() {
+            total += parseInt($(this).val()) || 0;
+        });
+
+        var remaining = maxPoints - total;
+        $('#availablePoints').text(remaining);
+
+        if (remaining < 0) {
+            $('#pointsWarning').show();
+            $('#submitBtn').prop('disabled', true);
+        } else {
+            $('#pointsWarning').hide();
+            $('#submitBtn').prop('disabled', false);
+        }
+    });
+});
+
+function resetForm() {
+    $('.stat-input').val(0);
+    $('#availablePoints').text($('#character').find(':selected').data('points') || 0);
+    $('#pointsWarning').hide();
+    $('#submitBtn').prop('disabled', false);
+}
+</script>
+{% endblock %}

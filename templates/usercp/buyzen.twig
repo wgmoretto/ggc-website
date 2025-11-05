@@ -1,0 +1,78 @@
+{% extends "layout.twig" %}
+
+{% block title %}Buy Zen - {{ server_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        {% include 'usercp/sidebar.twig' %}
+    </div>
+
+    <div class="col-md-9">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-money"></i> Buy Zen with Credits</h3>
+            </div>
+            <div class="panel-body">
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                {% if success %}
+                <div class="alert alert-success">{{ success }}</div>
+                {% endif %}
+
+                <div class="alert alert-info">
+                    <p><strong>Your Credits:</strong> <span class="label label-success">{{ session.credits|default(0) }}</span></p>
+                    <p>Exchange your credits for in-game Zen currency.</p>
+                </div>
+
+                <form method="POST" action="/usercp/buyzen">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <div class="form-group">
+                        <label for="character">Select Character</label>
+                        <select class="form-control" id="character" name="character" required>
+                            <option value="">-- Choose a character --</option>
+                            {% for char in characters %}
+                            <option value="{{ char.Name }}">
+                                {{ char.Name }} (Current Zen: {{ char.Money|default(0)|number_format }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Zen Amount</label>
+                        <input type="number" class="form-control" id="amount" name="amount" min="1000000" step="1000000" value="1000000" required>
+                        <p class="help-block">Enter the amount of Zen you want to purchase (minimum 1,000,000)</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Credits Required</label>
+                        <p class="form-control-static">
+                            <span id="creditsRequired">1</span> Credits
+                        </p>
+                        <p class="help-block">Rate: 1 Credit = 1,000,000 Zen</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-shopping-cart"></i> Purchase Zen
+                    </button>
+                    <a href="/usercp" class="btn btn-default">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$('#amount').on('input', function() {
+    var zen = parseInt($(this).val()) || 0;
+    var credits = Math.ceil(zen / 1000000);
+    $('#creditsRequired').text(credits);
+});
+</script>
+{% endblock %}

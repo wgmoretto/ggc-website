@@ -1,0 +1,60 @@
+{% extends "layout.twig" %}
+
+{% block title %}Clear Skill Tree - {{ server_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        {% include 'usercp/sidebar.twig' %}
+    </div>
+
+    <div class="col-md-9">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-tree"></i> Clear Master Skill Tree</h3>
+            </div>
+            <div class="panel-body">
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                {% if success %}
+                <div class="alert alert-success">{{ success }}</div>
+                {% endif %}
+
+                <div class="alert alert-warning">
+                    <h4><i class="fa fa-exclamation-triangle"></i> Warning!</h4>
+                    <p>This will completely reset your Master Skill Tree:</p>
+                    <ul>
+                        <li>All master skills will be removed</li>
+                        <li>Master level will be reset to 0</li>
+                        <li>Master points will be reset</li>
+                        <li>Your character must be offline!</li>
+                    </ul>
+                </div>
+
+                <form method="POST" action="/usercp/clearskilltree" onsubmit="return confirm('Are you sure you want to reset your Master Skill Tree? This cannot be undone!');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <div class="form-group">
+                        <label for="character">Select Character</label>
+                        <select class="form-control" id="character" name="character" required>
+                            <option value="">-- Choose a character --</option>
+                            {% for char in characters %}
+                            <option value="{{ char.Name }}">
+                                {{ char.Name }} (Master Level: {{ char.MasterLevel|default(0) }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fa fa-tree"></i> Clear Skill Tree
+                    </button>
+                    <a href="/usercp" class="btn btn-default">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

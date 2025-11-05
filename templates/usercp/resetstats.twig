@@ -1,0 +1,59 @@
+{% extends "layout.twig" %}
+
+{% block title %}Reset Stats - {{ server_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        {% include 'usercp/sidebar.twig' %}
+    </div>
+
+    <div class="col-md-9">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-refresh"></i> Reset Character Stats</h3>
+            </div>
+            <div class="panel-body">
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                {% if success %}
+                <div class="alert alert-success">{{ success }}</div>
+                {% endif %}
+
+                <div class="alert alert-warning">
+                    <h4><i class="fa fa-info-circle"></i> Information</h4>
+                    <p>This will reset your character's stats to base values and give you all stat points back.</p>
+                    <ul>
+                        <li>All stats will be reset to 20</li>
+                        <li>You will receive stat points based on your level</li>
+                        <li>Your character must be offline!</li>
+                    </ul>
+                </div>
+
+                <form method="POST" action="/usercp/resetstats" onsubmit="return confirm('Are you sure you want to reset stats for this character?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <div class="form-group">
+                        <label for="character">Select Character</label>
+                        <select class="form-control" id="character" name="character" required>
+                            <option value="">-- Choose a character --</option>
+                            {% for char in characters %}
+                            <option value="{{ char.Name }}">
+                                {{ char.Name }} (Level {{ char.cLevel }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fa fa-refresh"></i> Reset Stats
+                    </button>
+                    <a href="/usercp" class="btn btn-default">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

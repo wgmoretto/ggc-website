@@ -1,0 +1,110 @@
+{% extends "layout.twig" %}
+
+{% block title %}Plugin Manager - Admin{% endblock %}
+
+{% block content %}
+<h1><i class="fa fa-plug"></i> Plugin Manager</h1>
+
+{% if session.success %}
+<div class="alert alert-success">{{ session.success }}</div>
+{% endif %}
+
+{% if session.error %}
+<div class="alert alert-danger">{{ session.error }}</div>
+{% endif %}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Available Plugins</h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Plugin Name</th>
+                    <th>Version</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for key, plugin in plugins %}
+                <tr>
+                    <td><strong>{{ plugin.name }}</strong></td>
+                    <td><span class="label label-default">v{{ plugin.version }}</span></td>
+                    <td>{{ plugin.description }}</td>
+                    <td>
+                        {% if plugin.installed %}
+                            {% if plugin.enabled %}
+                                <span class="label label-success">Enabled</span>
+                            {% else %}
+                                <span class="label label-warning">Disabled</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="label label-default">Not Installed</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not plugin.installed %}
+                            <form method="POST" action="/admincp/plugins/{{ key }}/install" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="fa fa-download"></i> Install
+                                </button>
+                            </form>
+                        {% else %}
+                            {% if plugin.enabled %}
+                                <form method="POST" action="/admincp/plugins/{{ key }}/disable" style="display:inline;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-sm btn-warning">
+                                        <i class="fa fa-pause"></i> Disable
+                                    </button>
+                                </form>
+                            {% else %}
+                                <form method="POST" action="/admincp/plugins/{{ key }}/enable" style="display:inline;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="fa fa-play"></i> Enable
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                            <a href="/admincp/plugins/{{ key }}/configure" class="btn btn-sm btn-primary">
+                                <i class="fa fa-cog"></i> Configure
+                            </a>
+
+                            <form method="POST" action="/admincp/plugins/{{ key }}/uninstall" style="display:inline;" onsubmit="return confirm('Are you sure you want to uninstall this plugin?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fa fa-trash"></i> Uninstall
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-info-circle"></i> About Plugins</h3>
+    </div>
+    <div class="panel-body">
+        <p>Plugins extend the functionality of your WebEngine CMS. You can install, enable, disable, and configure plugins from this page.</p>
+
+        <h4>Payment Plugins:</h4>
+        <ul>
+            <li><strong>PayPal:</strong> Accept payments via PayPal with IPN webhook support</li>
+            <li><strong>Stripe:</strong> Accept credit card payments with Stripe Checkout</li>
+        </ul>
+
+        <p class="text-warning">
+            <strong>Note:</strong> After installing a plugin, make sure to configure it with your API keys before enabling it.
+        </p>
+    </div>
+</div>
+{% endblock %}

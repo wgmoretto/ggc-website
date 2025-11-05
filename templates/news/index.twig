@@ -1,0 +1,38 @@
+{% extends "layout.twig" %}
+
+{% block title %}News - {{ server_name }}{% endblock %}
+
+{% block content %}
+<h1><i class="fa fa-newspaper-o"></i> Server News</h1>
+
+{% if news %}
+    {% for article in news %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <a href="/news/{{ article.id }}">{{ article.title }}</a>
+            </h3>
+        </div>
+        <div class="panel-body">
+            {{ article.content|slice(0, 300)|raw }}...
+            <p class="text-right">
+                <a href="/news/{{ article.id }}" class="btn btn-primary btn-sm">
+                    Read More <i class="fa fa-arrow-right"></i>
+                </a>
+            </p>
+        </div>
+        <div class="panel-footer">
+            <small>
+                <i class="fa fa-user"></i> {{ article.author }} |
+                <i class="fa fa-calendar"></i> {{ article.created_at }} |
+                <i class="fa fa-folder"></i> {{ article.category|capitalize }}
+            </small>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-info">
+        <i class="fa fa-info-circle"></i> No news articles available at this time.
+    </div>
+{% endif %}
+{% endblock %}

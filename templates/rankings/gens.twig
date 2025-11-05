@@ -1,0 +1,55 @@
+{% extends "layout.twig" %}
+
+{% block title %}Gens Rankings - {{ server_name }}{% endblock %}
+
+{% block content %}
+<h1><i class="fa fa-flag"></i> Gens Rankings</h1>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Gens Contribution Rankings - Top 100</h3>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Character</th>
+                    <th>Class</th>
+                    <th>Family</th>
+                    <th>Contribution</th>
+                    <th>Level</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for player in rankings %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td><a href="/profile/player/{{ player.Name }}">{{ player.Name }}</a></td>
+                    <td>{{ player.ClassName }}</td>
+                    <td>
+                        {% if player.Family == 1 %}
+                            <span class="label label-primary">Duprian</span>
+                        {% elseif player.Family == 2 %}
+                            <span class="label label-danger">Vanert</span>
+                        {% else %}
+                            <span class="label label-default">None</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="label label-success">{{ player.Contribution }}</span></td>
+                    <td><span class="label label-info">{{ player.cLevel }}</span></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">No rankings available</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<a href="/rankings" class="btn btn-default">
+    <i class="fa fa-arrow-left"></i> Back to Rankings
+</a>
+{% endblock %}

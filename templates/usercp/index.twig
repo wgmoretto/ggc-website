@@ -1,0 +1,99 @@
+{% extends "layout.twig" %}
+
+{% block title %}User Control Panel - {{ server_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">Account Menu</div>
+            <div class="list-group">
+                <a href="/usercp/myaccount" class="list-group-item"><i class="fa fa-user"></i> My Account</a>
+                <a href="/usercp/myemail" class="list-group-item"><i class="fa fa-envelope"></i> Change Email</a>
+                <a href="/usercp/mypassword" class="list-group-item"><i class="fa fa-key"></i> Change Password</a>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Character Options</div>
+            <div class="list-group">
+                <a href="/usercp/addstats" class="list-group-item"><i class="fa fa-plus-circle"></i> Add Stats</a>
+                <a href="/usercp/reset" class="list-group-item"><i class="fa fa-repeat"></i> Reset Character</a>
+                <a href="/usercp/resetstats" class="list-group-item"><i class="fa fa-refresh"></i> Reset Stats</a>
+                <a href="/usercp/unstick" class="list-group-item"><i class="fa fa-map-marker"></i> Unstick Character</a>
+                <a href="/usercp/clearpk" class="list-group-item"><i class="fa fa-eraser"></i> Clear PK</a>
+                <a href="/usercp/clearskilltree" class="list-group-item"><i class="fa fa-tree"></i> Clear Skill Tree</a>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Other</div>
+            <div class="list-group">
+                <a href="/usercp/buyzen" class="list-group-item"><i class="fa fa-money"></i> Buy Zen</a>
+                <a href="/usercp/vote" class="list-group-item"><i class="fa fa-check"></i> Vote for Rewards</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Account Information</h3>
+            </div>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt>Username:</dt>
+                    <dd>{{ account.memb___id }}</dd>
+
+                    <dt>Email:</dt>
+                    <dd>{{ account.mail_addr }}</dd>
+
+                    <dt>Credits:</dt>
+                    <dd><strong>{{ account.credits|default(0) }}</strong> <a href="/donation" class="btn btn-xs btn-success">Buy More</a></dd>
+
+                    <dt>Member Since:</dt>
+                    <dd>{{ account.memb_join|default('N/A') }}</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">My Characters</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Class</th>
+                            <th>Level</th>
+                            <th>Resets</th>
+                            <th>Map</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for character in characters %}
+                        <tr>
+                            <td><a href="/profile/player/{{ character.Name }}">{{ character.Name }}</a></td>
+                            <td>{{ character.ClassName }}</td>
+                            <td>{{ character.cLevel }}</td>
+                            <td>{{ character.Resets|default(0) }}</td>
+                            <td>{{ character.MapNumber }}</td>
+                            <td>
+                                <a href="/usercp/addstats?char={{ character.Name }}" class="btn btn-xs btn-primary">Add Stats</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No characters found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

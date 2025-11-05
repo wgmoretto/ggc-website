@@ -1,0 +1,58 @@
+{% extends "layout.twig" %}
+
+{% block title %}Unstick Character - {{ server_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        {% include 'usercp/sidebar.twig' %}
+    </div>
+
+    <div class="col-md-9">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-map-marker"></i> Unstick Character</h3>
+            </div>
+            <div class="panel-body">
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                {% if success %}
+                <div class="alert alert-success">{{ success }}</div>
+                {% endif %}
+
+                <div class="alert alert-info">
+                    <h4><i class="fa fa-info-circle"></i> Information</h4>
+                    <p>Use this if your character is stuck in a location and cannot move.</p>
+                    <ul>
+                        <li>Your character will be moved to Lorencia (safe zone)</li>
+                        <li>Your character must be offline!</li>
+                    </ul>
+                </div>
+
+                <form method="POST" action="/usercp/unstick">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <div class="form-group">
+                        <label for="character">Select Character</label>
+                        <select class="form-control" id="character" name="character" required>
+                            <option value="">-- Choose a character --</option>
+                            {% for char in characters %}
+                            <option value="{{ char.Name }}">
+                                {{ char.Name }} (Map: {{ char.MapNumber }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-map-marker"></i> Unstick Character
+                    </button>
+                    <a href="/usercp" class="btn btn-default">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

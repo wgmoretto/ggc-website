@@ -1,0 +1,49 @@
+{% extends "layout.twig" %}
+
+{% block title %}Downloads - {{ server_name }}{% endblock %}
+
+{% block content %}
+<h1><i class="fa fa-download"></i> Downloads</h1>
+
+<div class="alert alert-info">
+    <i class="fa fa-info-circle"></i>
+    Download the game client and necessary files to start playing on {{ server_name }}.
+</div>
+
+{% if downloads %}
+    {% for download in downloads %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ download.title }}</h3>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <p>{{ download.description|raw }}</p>
+                    {% if download.version %}
+                    <p><strong>Version:</strong> {{ download.version }}</p>
+                    {% endif %}
+                    {% if download.file_size %}
+                    <p><strong>File Size:</strong> {{ download.file_size }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-4 text-right">
+                    <a href="{{ download.url }}" class="btn btn-success btn-lg" target="_blank">
+                        <i class="fa fa-download"></i> Download
+                    </a>
+                    {% if download.download_count > 0 %}
+                    <p class="text-muted" style="margin-top: 10px;">
+                        <small><i class="fa fa-download"></i> Downloaded {{ download.download_count }} times</small>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-warning">
+        <i class="fa fa-exclamation-triangle"></i> No downloads available at this time.
+    </div>
+{% endif %}
+{% endblock %}

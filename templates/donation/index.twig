@@ -1,0 +1,59 @@
+{% extends "layout.twig" %}
+
+{% block title %}Donate - {{ server_name }}{% endblock %}
+
+{% block content %}
+<h1><i class="fa fa-heart"></i> Support Our Server</h1>
+
+<div class="alert alert-info">
+    <i class="fa fa-info-circle"></i>
+    Support {{ server_name }} by purchasing credits. Credits can be used for various in-game services and items.
+</div>
+
+<div class="row">
+    {% for package in packages %}
+    <div class="col-md-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading text-center">
+                <h3 class="panel-title">{{ package.credits }} Credits</h3>
+            </div>
+            <div class="panel-body text-center">
+                <h2>${{ package.price }}</h2>
+                {% if package.bonus_credits > 0 %}
+                <p class="text-success">
+                    <strong>+{{ package.bonus_credits }} Bonus Credits!</strong>
+                </p>
+                {% endif %}
+                <hr>
+                <form method="POST" action="/donation/process">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="package_id" value="{{ package.id }}">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fa fa-paypal"></i> Buy Now
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% if loop.index % 3 == 0 %}
+    </div><div class="row">
+    {% endif %}
+    {% endfor %}
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-question-circle"></i> FAQ</h3>
+    </div>
+    <div class="panel-body">
+        <h4>How do I use credits?</h4>
+        <p>After purchasing credits, you can use them in your <a href="/usercp">User Control Panel</a> for various services like character resets, stat additions, and more.</p>
+
+        <h4>Is it safe?</h4>
+        <p>Yes! We use PayPal's secure payment system to process all transactions.</p>
+
+        <h4>How long does it take to receive credits?</h4>
+        <p>Credits are usually added to your account within 5 minutes of a successful payment.</p>
+    </div>
+</div>
+{% endblock %}

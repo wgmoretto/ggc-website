@@ -1,0 +1,59 @@
+{% extends "layout.twig" %}
+
+{% block title %}Clear PK - {{ server_name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        {% include 'usercp/sidebar.twig' %}
+    </div>
+
+    <div class="col-md-9">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-eraser"></i> Clear PK Status</h3>
+            </div>
+            <div class="panel-body">
+                {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                {% if success %}
+                <div class="alert alert-success">{{ success }}</div>
+                {% endif %}
+
+                <div class="alert alert-info">
+                    <h4><i class="fa fa-info-circle"></i> Information</h4>
+                    <p>This will clear your character's PK (Player Kill) status:</p>
+                    <ul>
+                        <li>PK Count will be reset to 0</li>
+                        <li>PK Level will be reset to normal</li>
+                        <li>Your name color will return to normal</li>
+                    </ul>
+                </div>
+
+                <form method="POST" action="/usercp/clearpk">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                    <div class="form-group">
+                        <label for="character">Select Character</label>
+                        <select class="form-control" id="character" name="character" required>
+                            <option value="">-- Choose a character --</option>
+                            {% for char in characters %}
+                            <option value="{{ char.Name }}">
+                                {{ char.Name }} (PK Count: {{ char.PkCount|default(0) }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-info">
+                        <i class="fa fa-eraser"></i> Clear PK
+                    </button>
+                    <a href="/usercp" class="btn btn-default">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
