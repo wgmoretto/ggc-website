@@ -77,13 +77,12 @@ class Vote
 
     public function getTopVoters(int $limit = 100): array
     {
-        $sql = "SELECT username, COUNT(*) as vote_count
+        $sql = "SELECT TOP ($limit) username, COUNT(*) as vote_count
                 FROM GGC_VOTES
                 WHERE voted_at >= DATEADD(month, -1, GETDATE())
                 GROUP BY username
-                ORDER BY vote_count DESC
-                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
+                ORDER BY vote_count DESC";
 
-        return $this->db->fetchAll($sql, [$limit]);
+        return $this->db->fetchAll($sql);
     }
 }

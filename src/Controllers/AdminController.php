@@ -202,7 +202,7 @@ class AdminController
 
     public function latestBans(Request $request, Response $response): Response
     {
-        $sql = "SELECT * FROM GGC_BANS ORDER BY banned_at DESC OFFSET 0 ROWS FETCH NEXT 50 ROWS ONLY";
+        $sql = "SELECT TOP (50) * FROM GGC_BANS ORDER BY banned_at DESC";
         $bans = $this->db->fetchAll($sql);
         return $this->view->render($response, 'admin/monitoring/bans.twig', ['bans' => $bans]);
     }

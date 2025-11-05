@@ -16,12 +16,22 @@ class News
 
     public function getAll(int $limit = 10, int $offset = 0): array
     {
-        $sql = "SELECT * FROM GGC_NEWS
-                WHERE published = 1
-                ORDER BY created_at DESC
-                OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
-        return $this->db->fetchAll($sql, [$offset, $limit]);
+        // Para SQL Server com paginação, usamos ROW_NUMBER() com TOP
+        if ($offset > 0) {
+            $sql = "WITH PaginatedNews AS (
+                    SELECT *, ROW_NUMBER() OVER (ORDER BY created_at DESC) as RowNum
+                    FROM GGC_NEWS
+                    WHERE published = 1
+                )
+                SELECT * FROM PaginatedNews
+                WHERE RowNum > $offset AND RowNum <= ($offset + $limit)";
+            return $this->db->fetchAll($sql);
+        } else {
+            $sql = "SELECT TOP ($limit) * FROM GGC_NEWS
+                    WHERE published = 1
+                    ORDER BY created_at DESC";
+            return $this->db->fetchAll($sql);
+        }
     }
 
     public function find(int $id): ?array
@@ -90,12 +100,11 @@ class News
 
     public function getRecent(int $limit = 5): array
     {
-        $sql = "SELECT * FROM GGC_NEWS
+        $sql = "SELECT TOP ($limit) * FROM GGC_NEWS
                 WHERE published = 1
-                ORDER BY created_at DESC
-                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
+                ORDER BY created_at DESC";
 
-        return $this->db->fetchAll($sql, [$limit]);
+        return $this->db->fetchAll($sql);
     }
 
     public function search(string $query): array

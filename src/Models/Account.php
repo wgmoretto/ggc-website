@@ -181,8 +181,19 @@ class Account
 
     public function getAllAccounts(int $limit = 100, int $offset = 0): array
     {
-        $sql = "SELECT * FROM MEMB_INFO ORDER BY memb___id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-        return $this->db->fetchAll($sql, [$offset, $limit]);
+        // Para SQL Server com paginação, usamos ROW_NUMBER() com TOP
+        if ($offset > 0) {
+            $sql = "WITH PaginatedAccounts AS (
+                    SELECT *, ROW_NUMBER() OVER (ORDER BY memb___id) as RowNum
+                    FROM MEMB_INFO
+                )
+                SELECT * FROM PaginatedAccounts
+                WHERE RowNum > $offset AND RowNum <= ($offset + $limit)";
+            return $this->db->fetchAll($sql);
+        } else {
+            $sql = "SELECT TOP ($limit) * FROM MEMB_INFO ORDER BY memb___id";
+            return $this->db->fetchAll($sql);
+        }
     }
 
     public function getRecentRegistrations(int $days = 7): array
