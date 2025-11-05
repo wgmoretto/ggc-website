@@ -1,12 +1,47 @@
 <?php
 declare(strict_types=1);
 
+// Check if Composer dependencies are installed
+if (!file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    die('
+    <html>
+    <head>
+        <title>Dependencies Not Installed</title>
+        <style>
+            body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 50px; }
+            .container { max-width: 700px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            h1 { color: #e74c3c; }
+            code { background: #f8f9fa; padding: 2px 8px; border-radius: 3px; font-family: monospace; }
+            pre { background: #2d3748; color: #fff; padding: 15px; border-radius: 6px; overflow-x: auto; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>⚠️ Dependencies Not Installed</h1>
+            <p>The Composer dependencies have not been installed yet.</p>
+
+            <p><strong>To install dependencies, run:</strong></p>
+            <pre>composer install</pre>
+
+            <p><strong>Or if you need to update:</strong></p>
+            <pre>composer update</pre>
+
+            <p style="margin-top: 20px;">
+                <strong>Don\'t have Composer?</strong><br>
+                Download it from <a href="https://getcomposer.org/" target="_blank">getcomposer.org</a>
+            </p>
+        </div>
+    </body>
+    </html>
+    ');
+}
+
+require __DIR__ . '/../vendor/autoload.php';
+
 use DI\Container;
 use Slim\Factory\AppFactory;
 use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
-
-require __DIR__ . '/../vendor/autoload.php';
 
 // Check if .env file exists, if not redirect to installer
 $envPath = __DIR__ . '/../.env';

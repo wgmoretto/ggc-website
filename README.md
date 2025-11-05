@@ -53,10 +53,12 @@ A modern, lightweight MU Online CMS built with Slim Framework 4, replicating all
 
 The easiest way to install WebEngine CMS is using our interactive web installer:
 
-1. **Install dependencies:**
+1. **Install dependencies (REQUIRED):**
    ```bash
    composer install
    ```
+
+   > ⚠️ **Important:** This step is mandatory! The application will not work without it.
 
 2. **Access the installer:**
    - Point your web server to the `/public` directory
