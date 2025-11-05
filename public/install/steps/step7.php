@@ -54,13 +54,13 @@ $_SESSION = [];
     <strong>🔒 Importante - Segurança:</strong><br>
     <div style="margin-top: 10px;">
         <strong>Remover diretório de instalação:</strong><br>
-        Execute no terminal: <code>rm -rf install/</code><br>
+        Execute no terminal: <code>rm -rf public/install/</code><br>
         Ou renomeie o diretório para evitar acesso não autorizado.
     </div>
 </div>
 
 <div style="text-align: center; margin-top: 40px;">
-    <a href="../public" class="btn btn-primary" style="font-size: 18px; padding: 15px 40px;">
+    <a href="../" class="btn btn-primary" style="font-size: 18px; padding: 15px 40px;">
         🎮 Ir para o Site →
     </a>
 </div>

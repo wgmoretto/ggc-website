@@ -12,7 +12,8 @@ class Installer
 
     public function __construct()
     {
-        $this->rootPath = dirname(__DIR__);
+        // /public/install -> go up 2 levels to root
+        $this->rootPath = dirname(dirname(__DIR__));
     }
 
     /**

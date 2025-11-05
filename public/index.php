@@ -10,13 +10,24 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // Check if .env file exists, if not redirect to installer
 $envPath = __DIR__ . '/../.env';
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+
 if (!file_exists($envPath)) {
-    // Check if installer exists
-    if (file_exists(__DIR__ . '/../install/index.php')) {
-        // Redirect to installer
-        header('Location: /install/');
-        exit;
+    // Avoid redirect loop - don't redirect if already in install path
+    if (strpos($requestUri, '/install') === false) {
+        // Check if installer exists
+        if (file_exists(__DIR__ . '/install/index.php')) {
+            // Redirect to installer
+            header('Location: /install/');
+            exit;
+        }
     } else {
+        // We're in install path but index.php was called, exit gracefully
+        exit;
+    }
+
+    // If no installer and not in install path, show error
+    if (strpos($requestUri, '/install') === false) {
         die('
         <html>
         <head>

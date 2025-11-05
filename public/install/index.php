@@ -8,7 +8,7 @@
 session_start();
 
 // Prevenir acesso se já instalado
-if (file_exists('../.env') && !isset($_GET['reinstall'])) {
+if (file_exists('../../.env') && !isset($_GET['reinstall'])) {
     die('
     <!DOCTYPE html>
     <html>
@@ -25,7 +25,7 @@ if (file_exists('../.env') && !isset($_GET['reinstall'])) {
         <div class="container">
             <h1>⚠️ Sistema Já Instalado</h1>
             <p>O WebEngine CMS já está instalado. Para reinstalar, remova o arquivo <code>.env</code> primeiro.</p>
-            <p><a href="../public">← Ir para o site</a></p>
+            <p><a href="../">← Ir para o site</a></p>
         </div>
     </body>
     </html>

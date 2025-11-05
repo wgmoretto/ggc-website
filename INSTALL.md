@@ -87,10 +87,10 @@ composer install
 
 ```bash
 # IMPORTANTE: Remova o diretório de instalação
-rm -rf install/
+rm -rf public/install/
 
 # Ou renomeie para segurança
-mv install/ _install_backup/
+mv public/install/ public/_install_backup/
 ```
 
 ---
@@ -411,7 +411,7 @@ Após seguir este guia, seu WebEngine CMS estará instalado e pronto para uso.
 **Não esqueça de remover o diretório `/install` após a instalação!**
 
 ```bash
-rm -rf install/
+rm -rf public/install/
 ```
 
 Divirta-se gerenciando seu servidor MU Online! 🎮

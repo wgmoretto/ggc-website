@@ -1,5 +1,9 @@
 RewriteEngine On
 
+# Allow direct access to install directory
+RewriteCond %{REQUEST_URI} ^/install/
+RewriteRule ^ - [L]
+
 # Redirect to index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

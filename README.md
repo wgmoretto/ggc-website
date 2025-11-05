@@ -65,7 +65,7 @@ The easiest way to install WebEngine CMS is using our interactive web installer:
 
 3. **Secure your installation:**
    ```bash
-   rm -rf install/  # Remove installer after completion
+   rm -rf public/install/  # Remove installer after completion
    ```
 
 For detailed installation instructions, see [INSTALL.md](INSTALL.md)
