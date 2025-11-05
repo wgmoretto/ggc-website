@@ -47,6 +47,35 @@ A modern, lightweight MU Online CMS built with Slim Framework 4, replicating all
 
 ## Installation
 
+> 🚀 **NEW!** WebEngine CMS now includes a web-based installer for easy setup!
+
+### Quick Install (Recommended)
+
+The easiest way to install WebEngine CMS is using our interactive web installer:
+
+1. **Install dependencies:**
+   ```bash
+   composer install
+   ```
+
+2. **Access the installer:**
+   - Point your web server to the `/public` directory
+   - Navigate to: `http://yourserver.com/install`
+   - Follow the 7-step installation wizard
+
+3. **Secure your installation:**
+   ```bash
+   rm -rf install/  # Remove installer after completion
+   ```
+
+For detailed installation instructions, see [INSTALL.md](INSTALL.md)
+
+---
+
+### Manual Installation
+
+If you prefer manual installation or need to automate the process:
+
 ### 1. Clone the Repository
 
 ```bash
@@ -271,6 +300,23 @@ server {
 ### 7. Access Your Site
 
 Visit `http://yourserver.com` in your browser.
+
+### 8. Create Administrator Account
+
+After installation, create an administrator to access the admin panel:
+
+1. Register a new account on your website
+2. Execute the following SQL to grant admin privileges:
+   ```sql
+   UPDATE MEMB_INFO
+   SET admin_level = 1
+   WHERE memb___id = 'your_username';
+   ```
+3. Access the admin panel at: `http://yourserver.com/admin`
+
+**Admin Levels:**
+- `0` = Regular user
+- `1` = Administrator (full access)
 
 ## Project Structure
 
