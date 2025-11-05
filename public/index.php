@@ -8,6 +8,39 @@ use Slim\Views\TwigMiddleware;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+// Check if .env file exists, if not redirect to installer
+$envPath = __DIR__ . '/../.env';
+if (!file_exists($envPath)) {
+    // Check if installer exists
+    if (file_exists(__DIR__ . '/../install/index.php')) {
+        // Redirect to installer
+        header('Location: /install/');
+        exit;
+    } else {
+        die('
+        <html>
+        <head>
+            <title>Configuration Required</title>
+            <style>
+                body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 50px; }
+                .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+                h1 { color: #e74c3c; }
+                code { background: #f8f9fa; padding: 2px 6px; border-radius: 3px; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>⚠️ Configuration Required</h1>
+                <p>The <code>.env</code> file is missing. Please create it from <code>.env.example</code>:</p>
+                <pre>cp .env.example .env</pre>
+                <p>Then edit the <code>.env</code> file with your database credentials and settings.</p>
+            </div>
+        </body>
+        </html>
+        ');
+    }
+}
+
 // Load environment variables
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
