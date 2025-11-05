@@ -3,55 +3,79 @@
 {% block title %}Level Rankings - {{ server_name }}{% endblock %}
 
 {% block content %}
-<h1><i class="fa fa-trophy"></i> Top Level Players</h1>
-
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        <h3 class="panel-title">Level Rankings - Top 100</h3>
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fa fa-trophy"></i> Top Level Players</h3>
     </div>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Character</th>
-                    <th>Class</th>
-                    <th>Level</th>
-                    <th>Resets</th>
-                    <th>Map</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for player in rankings %}
-                <tr>
-                    <td>
-                        {% if loop.index == 1 %}
-                            <i class="fa fa-trophy" style="color: gold;"></i>
-                        {% elseif loop.index == 2 %}
-                            <i class="fa fa-trophy" style="color: silver;"></i>
-                        {% elseif loop.index == 3 %}
-                            <i class="fa fa-trophy" style="color: #CD7F32;"></i>
-                        {% else %}
-                            {{ loop.index }}
-                        {% endif %}
-                    </td>
-                    <td><a href="/profile/player/{{ player.Name }}">{{ player.Name }}</a></td>
-                    <td>{{ player.ClassName }}</td>
-                    <td><span class="label label-success">{{ player.cLevel }}</span></td>
-                    <td><span class="label label-info">{{ player.Resets|default(0) }}</span></td>
-                    <td>{{ player.MapNumber }}</td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="6" class="text-center">No rankings available</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <div class="card-body">
+        <div style="margin-bottom: 20px;">
+            <a href="/rankings" class="btn btn-secondary">
+                <i class="fa fa-arrow-left"></i> Back to Rankings
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">#</th>
+                        <th>Character</th>
+                        <th>Class</th>
+                        <th style="text-align: center;">Level</th>
+                        <th style="text-align: center;">Resets</th>
+                        <th>Map</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for player in rankings %}
+                    <tr>
+                        <td>
+                            {% if loop.index == 1 %}
+                                <i class="fa fa-trophy fa-lg" style="color: #FFD700;"></i>
+                                <span class="text-orange" style="font-weight: bold; margin-left: 5px;">1st</span>
+                            {% elseif loop.index == 2 %}
+                                <i class="fa fa-trophy fa-lg" style="color: #C0C0C0;"></i>
+                                <span class="text-orange" style="font-weight: bold; margin-left: 5px;">2nd</span>
+                            {% elseif loop.index == 3 %}
+                                <i class="fa fa-trophy fa-lg" style="color: #CD7F32;"></i>
+                                <span class="text-orange" style="font-weight: bold; margin-left: 5px;">3rd</span>
+                            {% else %}
+                                {{ loop.index }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/profile/player/{{ player.Name }}" class="text-orange">
+                                <strong>{{ player.Name }}</strong>
+                            </a>
+                        </td>
+                        <td>
+                            <span class="text-secondary">{{ player.ClassName }}</span>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="label label-success" style="font-size: 13px; padding: 5px 12px;">
+                                {{ player.cLevel }}
+                            </span>
+                        </td>
+                        <td style="text-align: center;">
+                            <span class="label label-info" style="font-size: 13px; padding: 5px 12px;">
+                                {{ player.Resets|default(0) }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="text-secondary">{{ player.MapNumber }}</span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center" style="padding: 40px 0;">
+                            <i class="fa fa-info-circle fa-3x text-secondary" style="display: block; margin-bottom: 15px;"></i>
+                            <span style="color: var(--text-secondary);">No rankings available</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
-<a href="/rankings" class="btn btn-default">
-    <i class="fa fa-arrow-left"></i> Back to Rankings
-</a>
 {% endblock %}

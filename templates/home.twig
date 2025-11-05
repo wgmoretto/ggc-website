@@ -3,60 +3,164 @@
 {% block title %}Home - {{ server_name }}{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-8">
-        <h1>Welcome to {{ server_name }}</h1>
-        <p class="lead">Experience the best MU Online private server!</p>
+<!-- Hero Slider -->
+<div class="hero-slider">
+    <div class="slider-content">
+        <h1><i class="fa fa-gamepad"></i> Welcome to {{ server_name }}</h1>
+        <p>Experience the best MU Online private server with high rates, unique features, and an active community!</p>
+        <div>
+            <a href="/register" class="btn btn-primary btn-lg"><i class="fa fa-user-plus"></i> Create Account</a>
+            <a href="/downloads" class="btn btn-secondary btn-lg"><i class="fa fa-download"></i> Download Client</a>
+        </div>
+    </div>
+</div>
 
-        <h2>Latest News</h2>
-        {% for article in news %}
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">{{ article.title }}</h3>
+<!-- Main Content Grid -->
+<div class="layout-grid">
+    <!-- News/Content Area -->
+    <div class="main-content">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fa fa-newspaper-o"></i> Latest News</h3>
             </div>
-            <div class="panel-body">
-                {{ article.content|slice(0, 200) }}...
-                <a href="/news/{{ article.id }}">Read more</a>
-            </div>
-            <div class="panel-footer">
-                <small>Posted by {{ article.author }} on {{ article.created_at }}</small>
+            <div class="card-body">
+                {% if news %}
+                    {% for article in news %}
+                    <div class="news-item">
+                        <div class="news-title">
+                            <a href="/news/{{ article.id }}">{{ article.title }}</a>
+                        </div>
+                        <div class="news-meta">
+                            <i class="fa fa-user"></i> {{ article.author }}
+                            <i class="fa fa-calendar" style="margin-left: 15px;"></i> {{ article.created_at }}
+                        </div>
+                        <div class="news-excerpt">
+                            {{ article.content|slice(0, 250)|raw }}...
+                            <a href="/news/{{ article.id }}" class="text-red"><strong>Read more <i class="fa fa-arrow-right"></i></strong></a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center" style="padding: 40px 0; color: var(--text-secondary);">
+                        <i class="fa fa-info-circle fa-3x" style="display: block; margin-bottom: 15px;"></i>
+                        No news available at the moment. Check back soon!
+                    </p>
+                {% endif %}
             </div>
         </div>
-        {% endfor %}
     </div>
 
-    <div class="col-md-4">
-        <div class="panel panel-primary">
-            <div class="panel-heading">Server Statistics</div>
-            <div class="panel-body">
-                <p><strong>Online Players:</strong> {{ online_count }}</p>
-                <p><strong>Total Accounts:</strong> {{ total_accounts }}</p>
-                <p><strong>Total Characters:</strong> {{ total_characters }}</p>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Server Stats Widget -->
+        <div class="widget">
+            <div class="widget-title">
+                <i class="fa fa-server"></i> Server Status
+            </div>
+            <div class="server-stats">
+                <div class="stat-item">
+                    <div>
+                        <div class="stat-label">Online Players</div>
+                        <div class="stat-value">{{ online_count }}</div>
+                    </div>
+                    <i class="fa fa-users fa-2x text-orange"></i>
+                </div>
+                <div class="stat-item">
+                    <div>
+                        <div class="stat-label">Total Accounts</div>
+                        <div class="stat-value">{{ total_accounts }}</div>
+                    </div>
+                    <i class="fa fa-user fa-2x text-red"></i>
+                </div>
+                <div class="stat-item">
+                    <div>
+                        <div class="stat-label">Characters</div>
+                        <div class="stat-value">{{ total_characters }}</div>
+                    </div>
+                    <i class="fa fa-gamepad fa-2x text-orange"></i>
+                </div>
             </div>
         </div>
 
-        <div class="panel panel-info">
-            <div class="panel-heading">Top Players</div>
-            <div class="panel-body">
-                <table class="table table-condensed">
+        <!-- Quick Links Widget -->
+        <div class="widget">
+            <div class="widget-title">
+                <i class="fa fa-link"></i> Quick Links
+            </div>
+            <ul>
+                <li>
+                    <a href="/rankings">
+                        <span><i class="fa fa-trophy"></i> Rankings</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="/downloads">
+                        <span><i class="fa fa-download"></i> Downloads</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="/usercp">
+                        <span><i class="fa fa-dashboard"></i> User Panel</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="/donation">
+                        <span><i class="fa fa-credit-card"></i> Donate</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="/info">
+                        <span><i class="fa fa-info-circle"></i> Server Info</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Top Players Widget -->
+        <div class="widget">
+            <div class="widget-title">
+                <i class="fa fa-star"></i> Top Players
+            </div>
+            {% if top_players %}
+                <table class="table table-condensed" style="margin-bottom: 0;">
                     <thead>
                         <tr>
-                            <th>Rank</th>
+                            <th style="width: 30px;">#</th>
                             <th>Name</th>
-                            <th>Level</th>
+                            <th style="text-align: right;">Level</th>
                         </tr>
                     </thead>
                     <tbody>
-                    {% for player in top_players %}
+                    {% for player in top_players|slice(0, 5) %}
                         <tr>
-                            <td>{{ loop.index }}</td>
-                            <td><a href="/profile/player/{{ player.Name }}">{{ player.Name }}</a></td>
-                            <td>{{ player.cLevel }}</td>
+                            <td><span class="label label-default">{{ loop.index }}</span></td>
+                            <td>
+                                <a href="/profile/player/{{ player.Name }}" class="text-orange">
+                                    <strong>{{ player.Name }}</strong>
+                                </a>
+                            </td>
+                            <td style="text-align: right;">
+                                <span class="text-red"><strong>{{ player.cLevel }}</strong></span>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
-            </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <a href="/rankings" class="btn btn-secondary btn-sm">
+                        View All Rankings <i class="fa fa-arrow-right"></i>
+                    </a>
+                </div>
+            {% else %}
+                <p class="text-center" style="padding: 20px 0; color: var(--text-secondary);">
+                    No players yet. Be the first!
+                </p>
+            {% endif %}
         </div>
     </div>
 </div>
