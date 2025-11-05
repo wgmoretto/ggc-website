@@ -1,0 +1,94 @@
+{% extends "layout.twig" %}
+
+{% block content %}
+<!-- Hero Slider (opcional) -->
+{% block hero %}{% endblock %}
+
+<!-- Main Content Grid -->
+<div class="layout-grid">
+    <!-- Main Content Area -->
+    <div class="main-content">
+        {% block main_content %}
+            <div class="card">
+                <div class="card-body">
+                    <p class="text-center" style="padding: 40px 0;">Content goes here</p>
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        {% block sidebar %}
+        <!-- Server Stats Widget -->
+        <div class="widget">
+            <div class="widget-title">
+                <i class="fa fa-server"></i> Server Status
+            </div>
+            <div class="server-stats">
+                <div class="stat-item">
+                    <div>
+                        <div class="stat-label">Online Players</div>
+                        <div class="stat-value">{{ online_count|default(0) }}</div>
+                    </div>
+                    <i class="fa fa-users fa-2x text-orange"></i>
+                </div>
+                <div class="stat-item">
+                    <div>
+                        <div class="stat-label">Total Accounts</div>
+                        <div class="stat-value">{{ total_accounts|default(0) }}</div>
+                    </div>
+                    <i class="fa fa-user fa-2x text-red"></i>
+                </div>
+                <div class="stat-item">
+                    <div>
+                        <div class="stat-label">Characters</div>
+                        <div class="stat-value">{{ total_characters|default(0) }}</div>
+                    </div>
+                    <i class="fa fa-gamepad fa-2x text-orange"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Links Widget -->
+        <div class="widget">
+            <div class="widget-title">
+                <i class="fa fa-link"></i> Quick Links
+            </div>
+            <ul>
+                <li>
+                    <a href="/rankings">
+                        <span><i class="fa fa-trophy"></i> Rankings</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="/downloads">
+                        <span><i class="fa fa-download"></i> Downloads</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="/usercp">
+                        <span><i class="fa fa-dashboard"></i> User Panel</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="/donation">
+                        <span><i class="fa fa-credit-card"></i> Donate</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="/info">
+                        <span><i class="fa fa-info-circle"></i> Server Info</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}
