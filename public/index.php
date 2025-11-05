@@ -91,8 +91,18 @@ if (!file_exists($envPath)) {
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
-// Create Container
-$container = new Container();
+// Create Container with PHP-DI ContainerBuilder
+$containerBuilder = new \DI\ContainerBuilder();
+$containerBuilder->useAutowiring(true);
+$containerBuilder->useAttributes(false);
+
+// Build container
+$container = $containerBuilder->build();
+
+// Configure Container (load custom definitions)
+require __DIR__ . '/../config/container.php';
+
+// Set container for Slim
 AppFactory::setContainer($container);
 
 // Create App
@@ -113,9 +123,6 @@ $app->add(new \WebEngine\Middleware\SessionMiddleware());
 
 // CSRF Protection
 $app->add(new \WebEngine\Middleware\CsrfMiddleware($container));
-
-// Configure Container
-require __DIR__ . '/../config/container.php';
 
 // Load Routes
 require __DIR__ . '/../config/routes.php';
