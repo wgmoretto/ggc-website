@@ -63,11 +63,6 @@ $container->set(Database::class, function (ContainerInterface $c) {
     ]);
 });
 
-// Alias for Database (both class and WebEngine\Database\Database)
-$container->set(\WebEngine\Database\Database::class, function (ContainerInterface $c) {
-    return $c->get(Database::class);
-});
-
 // Logger
 $container->set(Logger::class, function (ContainerInterface $c) {
     $logger = new Logger('webengine');
