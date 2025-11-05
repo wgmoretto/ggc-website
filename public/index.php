@@ -118,11 +118,11 @@ $errorMiddleware = $app->addErrorMiddleware(
     true
 );
 
-// Session Middleware
-$app->add(new \WebEngine\Middleware\SessionMiddleware());
-
-// CSRF Protection
+// CSRF Protection (add first so it runs AFTER session)
 $app->add(new \WebEngine\Middleware\CsrfMiddleware($container));
+
+// Session Middleware (add last so it runs FIRST)
+$app->add(new \WebEngine\Middleware\SessionMiddleware());
 
 // Load Routes
 require __DIR__ . '/../config/routes.php';

@@ -90,11 +90,12 @@ class News
 
     public function getRecent(int $limit = 5): array
     {
-        $sql = "SELECT TOP {$limit} * FROM GGC_NEWS
+        $sql = "SELECT * FROM GGC_NEWS
                 WHERE published = 1
-                ORDER BY created_at DESC";
+                ORDER BY created_at DESC
+                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
 
-        return $this->db->fetchAll($sql);
+        return $this->db->fetchAll($sql, [$limit]);
     }
 
     public function search(string $query): array
