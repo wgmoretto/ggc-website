@@ -66,19 +66,21 @@ class Donation
 
     public function getTransactionHistory(string $username, int $limit = 50): array
     {
-        $sql = "SELECT TOP {$limit} * FROM GGC_PAYPAL_TRANSACTIONS
+        $sql = "SELECT * FROM GGC_PAYPAL_TRANSACTIONS
                 WHERE username = ?
-                ORDER BY created_at DESC";
+                ORDER BY created_at DESC
+                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
 
-        return $this->db->fetchAll($sql, [$username]);
+        return $this->db->fetchAll($sql, [$username, $limit]);
     }
 
     public function getAllTransactions(int $limit = 100): array
     {
-        $sql = "SELECT TOP {$limit} * FROM GGC_PAYPAL_TRANSACTIONS
-                ORDER BY created_at DESC";
+        $sql = "SELECT * FROM GGC_PAYPAL_TRANSACTIONS
+                ORDER BY created_at DESC
+                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
 
-        return $this->db->fetchAll($sql);
+        return $this->db->fetchAll($sql, [$limit]);
     }
 
     public function buyItem(string $username, int $cost, string $itemName): bool

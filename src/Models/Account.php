@@ -181,8 +181,8 @@ class Account
 
     public function getAllAccounts(int $limit = 100, int $offset = 0): array
     {
-        $sql = "SELECT TOP {$limit} * FROM MEMB_INFO ORDER BY memb___id OFFSET {$offset} ROWS";
-        return $this->db->fetchAll($sql);
+        $sql = "SELECT * FROM MEMB_INFO ORDER BY memb___id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        return $this->db->fetchAll($sql, [$offset, $limit]);
     }
 
     public function getRecentRegistrations(int $days = 7): array

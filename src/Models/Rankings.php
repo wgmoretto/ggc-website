@@ -16,14 +16,14 @@ class Rankings
 
     public function getTopLevel(int $limit = 100): array
     {
-        $sql = "SELECT TOP {$limit}
-                c.Name, c.Class, c.cLevel, c.MapNumber,
+        $sql = "SELECT c.Name, c.Class, c.cLevel, c.MapNumber,
                 c.Resets, c.AccountID, c.CtlCode
                 FROM Character c
                 WHERE c.CtlCode = 0
-                ORDER BY c.Resets DESC, c.cLevel DESC, c.Experience DESC";
+                ORDER BY c.Resets DESC, c.cLevel DESC, c.Experience DESC
+                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
 
-        $characters = $this->db->fetchAll($sql);
+        $characters = $this->db->fetchAll($sql, [$limit]);
 
         foreach ($characters as &$char) {
             $char['ClassName'] = $this->getClassName((int)$char['Class']);
@@ -34,13 +34,13 @@ class Rankings
 
     public function getTopResets(int $limit = 100): array
     {
-        $sql = "SELECT TOP {$limit}
-                c.Name, c.Class, c.cLevel, c.Resets, c.AccountID
+        $sql = "SELECT c.Name, c.Class, c.cLevel, c.Resets, c.AccountID
                 FROM Character c
                 WHERE c.CtlCode = 0
-                ORDER BY c.Resets DESC, c.cLevel DESC";
+                ORDER BY c.Resets DESC, c.cLevel DESC
+                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
 
-        $characters = $this->db->fetchAll($sql);
+        $characters = $this->db->fetchAll($sql, [$limit]);
 
         foreach ($characters as &$char) {
             $char['ClassName'] = $this->getClassName((int)$char['Class']);
@@ -51,26 +51,26 @@ class Rankings
 
     public function getTopGuilds(int $limit = 50): array
     {
-        $sql = "SELECT TOP {$limit}
-                g.G_Name, g.G_Master, g.G_Score, g.G_Notice,
+        $sql = "SELECT g.G_Name, g.G_Master, g.G_Score, g.G_Notice,
                 COUNT(gm.Name) as MemberCount
                 FROM Guild g
                 LEFT JOIN GuildMember gm ON g.G_Name = gm.G_Name
                 GROUP BY g.G_Name, g.G_Master, g.G_Score, g.G_Notice
-                ORDER BY g.G_Score DESC";
+                ORDER BY g.G_Score DESC
+                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
 
-        return $this->db->fetchAll($sql);
+        return $this->db->fetchAll($sql, [$limit]);
     }
 
     public function getTopKillers(int $limit = 100): array
     {
-        $sql = "SELECT TOP {$limit}
-                c.Name, c.Class, c.cLevel, c.PkCount, c.PkLevel, c.AccountID
+        $sql = "SELECT c.Name, c.Class, c.cLevel, c.PkCount, c.PkLevel, c.AccountID
                 FROM Character c
                 WHERE c.CtlCode = 0 AND c.PkCount > 0
-                ORDER BY c.PkCount DESC";
+                ORDER BY c.PkCount DESC
+                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
 
-        $characters = $this->db->fetchAll($sql);
+        $characters = $this->db->fetchAll($sql, [$limit]);
 
         foreach ($characters as &$char) {
             $char['ClassName'] = $this->getClassName((int)$char['Class']);
@@ -81,14 +81,14 @@ class Rankings
 
     public function getOnlinePlayers(int $limit = 100): array
     {
-        $sql = "SELECT TOP {$limit}
-                c.Name, c.Class, c.cLevel, c.MapNumber, c.Resets, c.AccountID
+        $sql = "SELECT c.Name, c.Class, c.cLevel, c.MapNumber, c.Resets, c.AccountID
                 FROM Character c
                 INNER JOIN MEMB_STAT ms ON c.AccountID = ms.memb___id
                 WHERE ms.ConnectStat = 1 AND c.CtlCode = 0
-                ORDER BY c.cLevel DESC";
+                ORDER BY c.cLevel DESC
+                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
 
-        $characters = $this->db->fetchAll($sql);
+        $characters = $this->db->fetchAll($sql, [$limit]);
 
         foreach ($characters as &$char) {
             $char['ClassName'] = $this->getClassName((int)$char['Class']);
@@ -99,25 +99,25 @@ class Rankings
 
     public function getTopVoters(int $limit = 100): array
     {
-        $sql = "SELECT TOP {$limit}
-                username, COUNT(*) as vote_count
+        $sql = "SELECT username, COUNT(*) as vote_count
                 FROM GGC_VOTES
                 WHERE voted_at >= DATEADD(month, -1, GETDATE())
                 GROUP BY username
-                ORDER BY vote_count DESC";
+                ORDER BY vote_count DESC
+                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
 
-        return $this->db->fetchAll($sql);
+        return $this->db->fetchAll($sql, [$limit]);
     }
 
     public function getTopMasterLevel(int $limit = 100): array
     {
-        $sql = "SELECT TOP {$limit}
-                c.Name, c.Class, c.cLevel, c.MasterLevel, c.Resets, c.AccountID
+        $sql = "SELECT c.Name, c.Class, c.cLevel, c.MasterLevel, c.Resets, c.AccountID
                 FROM Character c
                 WHERE c.CtlCode = 0 AND c.MasterLevel > 0
-                ORDER BY c.MasterLevel DESC, c.MasterExperience DESC";
+                ORDER BY c.MasterLevel DESC, c.MasterExperience DESC
+                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
 
-        $characters = $this->db->fetchAll($sql);
+        $characters = $this->db->fetchAll($sql, [$limit]);
 
         foreach ($characters as &$char) {
             $char['ClassName'] = $this->getClassName((int)$char['Class']);
@@ -128,8 +128,7 @@ class Rankings
 
     public function getTopGens(int $limit = 100, int $family = null): array
     {
-        $sql = "SELECT TOP {$limit}
-                c.Name, c.Class, c.cLevel, c.Resets, c.AccountID,
+        $sql = "SELECT c.Name, c.Class, c.cLevel, c.Resets, c.AccountID,
                 ISNULL(c.GensContribution, 0) as Contribution,
                 ISNULL(c.GensFamily, 0) as Family
                 FROM Character c
@@ -142,7 +141,8 @@ class Rankings
             $params[] = $family;
         }
 
-        $sql .= " ORDER BY Contribution DESC";
+        $sql .= " ORDER BY Contribution DESC OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
+        $params[] = $limit;
 
         $characters = $this->db->fetchAll($sql, $params);
 
@@ -155,14 +155,14 @@ class Rankings
 
     public function getTopGrandResets(int $limit = 100): array
     {
-        $sql = "SELECT TOP {$limit}
-                c.Name, c.Class, c.cLevel, c.Resets,
+        $sql = "SELECT c.Name, c.Class, c.cLevel, c.Resets,
                 ISNULL(c.GrandResets, 0) as GrandResets, c.AccountID
                 FROM Character c
                 WHERE c.CtlCode = 0
-                ORDER BY GrandResets DESC, c.Resets DESC, c.cLevel DESC";
+                ORDER BY GrandResets DESC, c.Resets DESC, c.cLevel DESC
+                OFFSET 0 ROWS FETCH NEXT ? ROWS ONLY";
 
-        $characters = $this->db->fetchAll($sql);
+        $characters = $this->db->fetchAll($sql, [$limit]);
 
         foreach ($characters as &$char) {
             $char['ClassName'] = $this->getClassName((int)$char['Class']);
